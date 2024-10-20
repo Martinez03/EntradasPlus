@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <div class="row justify-content-center mt-3 align-items-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="input-group">
+                <input class="form-control rounded-pill py-3 shadow" type="search" placeholder="Buscar..." id="example-search-input1">
+                <span class="input-group-text bg-transparent border-0 position-absolute end-0 me-3">
+                    <i class="fa fa-search mt-3 ml-1"></i>
+                </span>
+            </div>
+        </div>
+    </div> 
+
+    <hr class="my-3">
+
+    <div class="container-fluid">
+        <div class="row">
+            {% for evento in eventos %}
+            <div class="col-md-6 mb-2">
+                <div class="card shadow h-100">
+                    {% if evento.imagen %}
+                    <img src="{{ evento.imagen.url }}" class="img-fluid img-local card-img-top" style="width: 100%; object-fit: cover; height: 20rem;" alt="{{ evento.nombre }}">
+                    {% endif %}
+                    <h3 class="card-title mt-3 mx-2 fw-bold">{{ evento.nombre }}</h3>
+                    <hr class="my-3">
+                    <p class="card-text mx-2">{{ evento.descripcion }}</p>
+                    <h5 class="mx-2"><i class="fa-solid fa-location-dot ml-5"></i>{{ evento.lugar }}</h5>
+                </div>
+            </div>
+            {% endfor %}
+        </div> 
+    </div> 
+</div> 
+
+{% endblock %}

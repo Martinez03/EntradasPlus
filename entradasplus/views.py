@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from . import models
-from .models import Empresa
+from .models import Empresa, Evento
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from datetime import datetime
@@ -138,3 +138,11 @@ def registro_empresa(request):
         form = EmpresaForm()
 
     return render(request, 'registro_empresa.html', {'form': form})
+
+def trending(request):
+    eventos = Evento.objects.all()
+    context = {
+        'eventos': eventos, 
+    }
+
+    return render(request, 'trending.html', context)

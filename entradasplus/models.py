@@ -8,8 +8,8 @@ from django.contrib.auth.models import User
 class Empresa(models.Model):
     nombre = models.CharField(max_length=200)
     descripcion = models.TextField(blank=True)
-    email = models.EmailField(unique=True)  # Correo electrónico único
-    password = models.CharField(max_length=128)  # Contraseña encriptada
+    email = models.EmailField(blank=True)  # Correo electrónico único
+    password = models.CharField(blank=True,max_length=128)  # Contraseña encriptada
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -23,6 +23,7 @@ class Evento(models.Model):
     lugar = models.CharField(max_length=200)
     capacidad = models.IntegerField()  # Capacidad máxima del evento
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+    imagen = models.ImageField(upload_to='eventos/', blank=True, null=True)
 
     def __str__(self):
         return self.nombre
