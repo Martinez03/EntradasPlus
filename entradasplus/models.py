@@ -4,10 +4,12 @@ from django.db import models
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Empresa(models.Model):
     nombre = models.CharField(max_length=200)
     descripcion = models.TextField(blank=True)
-    propietario = models.ForeignKey(User, on_delete=models.CASCADE)  # Dueño de la empresa
+    email = models.EmailField(unique=True)  # Correo electrónico único
+    password = models.CharField(max_length=128)  # Contraseña encriptada
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

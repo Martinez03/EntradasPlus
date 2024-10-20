@@ -13,15 +13,22 @@
 <body>
 
 {% block content %}
-    <div class="container text-center"> <!-- Centra el contenido dentro de un contenedor -->
-        <div>
-            <h1 class="fw-bold mt-5" style="color: #c3b9e3;">Bienvenido a Entradas Plus</h1>
-        </div>
-        <img src="{% static 'pictures/background.jpg' %}" alt="Background Image" class="img-fluid mt-5 rounded shadow"> <!-- Utiliza img-fluid para que la imagen sea responsiva -->    
-        {% if user.is_authenticated %}
-        <h1 class="mt-4">Hi {{ user.username }}!</h1>
+    <div class="container text-center">
+        <!-- Mensajes de error -->
+        {% if messages %}
+            <div class="alert alert-danger mt-3">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
         {% endif %}
-
+        
+        <!-- El resto del contenido que ya tienes -->
+        <h1 class="fw-bold mt-5" style="color: #c3b9e3;">Bienvenido a Entradas Plus</h1>
+        <img src="{% static 'pictures/background.jpg' %}" alt="Background Image" class="img-fluid mt-5 rounded shadow">
+        {% if user.is_authenticated %}
+        <h1 class="mt-4">Hola {{ user.username }}!</h1>
+        {% endif %}
     </div>
 
     <div class="row">
