@@ -104,3 +104,14 @@
 .li-calendar.today time {
     font-weight: 800;
 }
+
+.card {
+    position: relative;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    cursor:pointer;
+}
+
+.card:hover {
+    background-color: rgba(0, 0, 0, 0.05); /* Un poco gris */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+}
