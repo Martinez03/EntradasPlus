@@ -6,7 +6,9 @@ from django.contrib import messages
 from datetime import datetime
 from django.db.models import Q  # Asegúrate de importar Q para las búsquedas
 from django.utils import timezone  # Para manejar fechas con soporte de zona horaria
-from .forms import EventoForm,EmpresaForm
+from .forms import EventoForm,EmpresaForm,RegisterForm
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 
 def index(request):
     # Usamos timezone.now() para manejar fechas con zona horaria si es necesario
@@ -90,55 +92,6 @@ def eliminar_evento(request, evento_id):
 
 
 
-
-def login_empresa(request):
-    if request.method == 'POST':
-        email = request.POST['email']
-        password = request.POST['password']
-        
-        try:
-            # Buscar la empresa por su correo electrónico
-            empresa = Empresa.objects.get(email=email)
-            
-            # Verificar la contraseña
-            if check_password(password, empresa.password):
-                # Crear la sesión para la empresa
-                request.session['empresa_id'] = empresa.id
-                messages.success(request, f'Bienvenido, {empresa.nombre}!')
-                return redirect('home')  # Redirigir a la página principal o al panel de la empresa
-            else:
-                messages.error(request, 'Contraseña incorrecta.')
-                return redirect('login_empresa')
-        except Empresa.DoesNotExist:
-            messages.error(request, 'No se encontró una empresa con ese correo electrónico.')
-            return redirect('login_empresa')
-
-    
-    return render(request, 'login_empresa.html')
-
-def logout_empresa(request):
-
-    # Eliminar la sesión de empresa
-    if 'empresa_id' in request.session:
-        del request.session['empresa_id']
-        messages.success(request, 'Has cerrado sesión como empresa.')
-    
-    return redirect('home')  # Redirigir a la página principal
-
-def registro_empresa(request):
-    if request.method == 'POST':
-        form = EmpresaForm(request.POST)
-        if form.is_valid():
-            empresa = form.save(commit=False)
-            empresa.password = make_password(form.cleaned_data['password'])  # Encriptar la contraseña
-            empresa.save()
-            messages.success(request, 'Empresa registrada con éxito.')
-            return redirect('login_empresa')
-    else:
-        form = EmpresaForm()
-
-    return render(request, 'registro_empresa.html', {'form': form})
-
 def trending(request):
     eventos = Evento.objects.all()
     context = {
@@ -146,3 +99,23 @@ def trending(request):
     }
 
     return render(request, 'trending.html', context)
+
+def login_empresa(request):
+    
+
+    return render(request, 'index.html')
+
+def register(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/')  # Redirige a la página principal o la ruta deseada después de registrarse
+        else:
+            messages.error( request,'Hubo un error al crear el usuario, intentelo mas tarde.')
+            return redirect('/')  
+        
+   
+ 
+
+

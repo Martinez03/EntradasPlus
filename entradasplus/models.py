@@ -55,3 +55,4 @@ class Reseña(models.Model):
     comentario = models.TextField()
     calificacion = models.IntegerField()  # Rango de 1 a 5, por ejemplo
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+
