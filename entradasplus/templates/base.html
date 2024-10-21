@@ -59,12 +59,12 @@
       <!-- Verificar si el usuario está autenticado -->
       {% if user.is_authenticated %}
       <!-- Si un usuario está autenticado, mostrar "Cerrar sesión" para usuario -->
-      <a href="{% url 'logout' %}" class="btn btn-grad btn-login shadow">
+      <a href="{% url 'logout' %}" class="btn btn-grad-logout btn-login shadow">
           <i class="bi bi-box-arrow-right"></i> Cerrar sesión
       </a>
       {% elif request.session.empresa_id %}
       <!-- Si una empresa está autenticada, mostrar "Cerrar sesión" para empresa -->
-      <a href="{% url 'logout_empresa' %}" class="btn btn-grad btn-login shadow">
+      <a href="{% url 'logout_empresa' %}" class="btn btn-grad-logout btn-login shadow">
           <i class="bi bi-box-arrow-right"></i> Cerrar sesión
       </a>
       {% else %}

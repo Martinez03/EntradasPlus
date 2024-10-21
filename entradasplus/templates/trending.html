@@ -39,7 +39,7 @@
                 <div class="modal-dialog modal-lg">
                     <div class="card">
                         {% if evento.imagen %}
-                        <img src="{{ evento.imagen.url }}" class="img-fluid rounded shadow" alt="{{ evento.nombre }}">
+                        <img src="{{ evento.imagen.url }}" class="img-fluid rounded shadow" alt="{{ evento.nombre }}" style="width: 100%; object-fit: cover; height: 30rem;">
                         {% endif %}
                         <div class="card-body">
                             <div class="row">
@@ -56,7 +56,7 @@
 
                             <hr class="my-2">
                             <div class="row">
-                                <div class="col-md-3 p-1 rounded-pill border text-center bg-success text-white shadow">
+                                <div class="col-md-3 p-1 ms-3 rounded-pill border text-center bg-success text-white shadow">
                                     <h5 class="mt-2">Disponible</h5>
                                 </div>
                                 <div class="col-md-4 mx-5 p-1 border rounded shadow text-center">

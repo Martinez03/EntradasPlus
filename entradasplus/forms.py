@@ -16,7 +16,7 @@ class EmpresaForm(forms.ModelForm):
 
 
 class RegisterForm(UserCreationForm):
-    #email = forms.EmailField(required=True)
+    email = forms.EmailField(required=True)
 
     class Meta:
         model = User
