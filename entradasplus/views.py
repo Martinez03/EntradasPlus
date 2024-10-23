@@ -116,6 +116,24 @@ def register(request):
             messages.error( request,'Hubo un error al crear el usuario, intentelo mas tarde.')
             return redirect('/')  
         
+def contactar_empresa(request):
+    if request.method == 'POST':
+        form = EmpresaForm(request.POST)
+        if form.is_valid():
+            form.save()  # Esto creará la empresa y el usuario
+            return redirect('empresa_pendiente')  # Redirigir a la página de confirmación
+    else:
+        form = EmpresaForm()
+    
+    return render(request, 'contactar_empresa.html', {'form': form})
+
+def comprar(request, evento_id):
+    # Obtén el evento por su ID, o muestra un 404 si no se encuentra
+    evento = get_object_or_404(Evento, id=evento_id)
+    
+    # Puedes agregar más lógica aquí si es necesario
+
+    return render(request, 'comprar.html', {'evento': evento})
    
  
 

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        {% if evento.imagen %}
+        <img src="{{ evento.imagen.url }}" class="img-fluid rounded shadow" alt="{{ evento.nombre }}" style="width: 100%; object-fit: cover; height: 30rem;">
+        {% endif %}
+
+
+
+        
+
+
+    </div>
+</div>
+    
+{% endblock %}

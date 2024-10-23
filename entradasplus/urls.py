@@ -11,6 +11,7 @@ urlpatterns = [
     path('calendar', views.calendar, name='calendar'),
     path('login', views.login_view, name='login'),
     path('eventos/<int:evento_id>/', views.detalles_evento, name='detalles_evento'),
+    path('comprar/<int:evento_id>/', views.comprar, name='comprar_evento'),
     path('logout/', views.logout_view, name='logout'),
     path('crear_evento/', views.crear_evento, name='crear_evento'),
     path('editar_evento/<int:evento_id>/', views.editar_evento, name='editar_evento'),

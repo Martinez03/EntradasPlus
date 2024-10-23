@@ -28,8 +28,9 @@
                     {% endif %}
                     <h3 class="card-title mt-3 mx-2 fw-bold">{{ evento.nombre }}</h3>
                     <hr class="my-3">
-                    <p class="card-text mx-2">{{ evento.descripcion }}</p>
-                    <h5 class="mx-2"><i class="fa-solid fa-location-dot ml-5"></i>{{ evento.lugar }}</h5>
+                    <div class="col-md-12 text-center">
+                        <h5><i class="fa-solid fa-location-dot mb-3 text-danger"></i>  {{ evento.lugar }}</h5>
+                    </div>
                 </div>
             </div>
 
@@ -37,43 +38,53 @@
             <div class="modal fade" id="modal-{{ evento.id }}" tabindex="-1" aria-labelledby="modalLabel{{ evento.id }}"
                 aria-hidden="true">
                 <div class="modal-dialog modal-lg">
-                    <div class="card">
+                    <div class="modal-content">
                         {% if evento.imagen %}
                         <img src="{{ evento.imagen.url }}" class="img-fluid rounded shadow" alt="{{ evento.nombre }}" style="width: 100%; object-fit: cover; height: 30rem;">
                         {% endif %}
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-11 ">
-                                    <h3 class="fw-bold">{{ evento.nombre }}</h3>
+                        <div class="modal-container">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-11 ">
+                                        <h3 class="fw-bold">{{ evento.nombre }}</h3>
+                                    </div>
+                                    {% if request.user.is_authenticated %}
+                                        <div class="col-md-1">
+                                            <i class="fa-regular fa-heart" style="font-size: 2rem; color: red;"></i>
+                                        </div>
+                                    {% endif %}
                                 </div>
-                                <div class="col-md-1">
-                                    <i class="fa-regular fa-heart" style="font-size: 2rem; color: red;"></i>
+                                <hr>
+                                <h5><i class="fa-solid fa-location-dot text-danger"></i> {{ evento.lugar }}</h5>
+                                <p>{{ evento.descripcion }}</p>
+
+                                <hr class="my-2">
+                                <div class="row">
+                                    <div class="col-md-3 p-1 ms-3 rounded-pill border text-center bg-success text-white shadow">
+                                        <h5 class="mt-2">Disponible</h5>
+                                    </div>
+                                    <div class="col-md-4 mx-5 p-1 border rounded shadow text-center">
+                                        <h5 class="mt-2">{{ evento.fecha_evento }}</h5>
+                                    </div>
+                                    {% if request.user.is_authenticated %}
+                                        <a href="{% url 'comprar_evento' evento.id %}" class="col-md-3 border rounded-pill p-1 shadow text-center text-white bg-info" style="cursor: pointer; text-decoration: none;">
+                                            <h5 class="mt-2"><i class="fa-solid fa-ticket"></i> Comprar</h5>
+                                        </a>
+                                    {% else %}
+                                        <div class="col-md-3 border rounded-pill p-1 shadow text-center text-white bg-info" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                            <h5 class="mt-2"><i class="fa-solid fa-ticket"></i>  Comprar</h5>
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
-                            <hr>
-                            <h5><i class="fa-solid fa-location-dot"></i> {{ evento.lugar }}</h5>
-                            <p>{{ evento.descripcion }}</p>
-
-                            <hr class="my-2">
-                            <div class="row">
-                                <div class="col-md-3 p-1 ms-3 rounded-pill border text-center bg-success text-white shadow">
-                                    <h5 class="mt-2">Disponible</h5>
-                                </div>
-                                <div class="col-md-4 mx-5 p-1 border rounded shadow text-center">
-                                    <h5 class="mt-2">{{ evento.fecha_evento }}</h5>
-                                </div>
-                                <div class="col-md-3 border rounded-pill p-1 shadow text-center text-white bg-info">
-                                    <h5 class="mt-2"><i class="fa-solid fa-ticket"></i>  Comprar</h5>
-                                </div>
-                            </div>
-
                         </div>
-                    </div>
+                    </div>   
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
 </div>
+
 
 {% endblock %}
