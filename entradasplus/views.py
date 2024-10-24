@@ -130,10 +130,11 @@ def contactar_empresa(request):
 def comprar(request, evento_id):
     # Obtén el evento por su ID, o muestra un 404 si no se encuentra
     evento = get_object_or_404(Evento, id=evento_id)
+    entradas = evento.entradas.all()
     
     # Puedes agregar más lógica aquí si es necesario
 
-    return render(request, 'comprar.html', {'evento': evento})
+    return render(request, 'comprar.html', {'evento': evento , 'entradas': entradas })
    
  
 

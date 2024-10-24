@@ -29,7 +29,7 @@ class Evento(models.Model):
         return self.nombre
 
 class Entrada(models.Model):
-    evento = models.ForeignKey(Evento, on_delete=models.CASCADE)  # Evento al que pertenece la entrada
+    evento = models.ForeignKey(Evento, on_delete=models.CASCADE, related_name='entradas')  # Evento al que pertenece la entrada
     tipo = models.CharField(max_length=50)  # Ej: General, VIP, etc.
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     cantidad_disponible = models.IntegerField()  # Cantidad de entradas disponibles
