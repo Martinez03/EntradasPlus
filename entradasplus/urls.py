@@ -19,6 +19,8 @@ urlpatterns = [
     path('login_empresa/', views.login_empresa, name='login_empresa'),
     path('trending/', views.trending, name='trending'),
     path("register/", views.register, name="register"),
+    path('contacta-con-nosotros/', views.contactar_empresa, name='contactar_empresa'),
+    path('empresa/pendiente/', views.empresa_pendiente)
 ]
 
 if settings.DEBUG:

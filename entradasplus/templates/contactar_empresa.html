@@ -1,12 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2>Registrar Empresa</h2>
+<div class="signup-container">
+    <h2>Contacta con Nosotros</h2>
+
+    <!-- Mensajes de error -->
+    {% if form.errors %}
+        <div class="error-message">
+            <p>Por favor, corrige los siguientes errores:</p>
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Registrar Empresa</button>
+        {{ form.as_p }}  <!-- Renderizar el formulario completo -->
+        <button type="submit" class="btn btn-primary">Enviar</button>
     </form>
 </div>
 {% endblock %}

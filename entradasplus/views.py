@@ -9,6 +9,7 @@ from django.utils import timezone  # Para manejar fechas con soporte de zona hor
 from .forms import EventoForm,EmpresaForm,RegisterForm
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from .decorators import empresa_verificada_required
 
 def index(request):
     # Usamos timezone.now() para manejar fechas con zona horaria si es necesario
@@ -127,6 +128,16 @@ def contactar_empresa(request):
     
     return render(request, 'contactar_empresa.html', {'form': form})
 
+
+def verificar_estado_empresa(user):
+    try:
+        empresa = Empresa.objects.get(usuario=user)
+        if empresa.estado == 'pendiente':
+            return False
+        return True
+    except Empresa.DoesNotExist:
+        return True  # Si no es una empresa, no hay problema
+
 def comprar(request, evento_id):
     # Obtén el evento por su ID, o muestra un 404 si no se encuentra
     evento = get_object_or_404(Evento, id=evento_id)
@@ -135,6 +146,25 @@ def comprar(request, evento_id):
     # Puedes agregar más lógica aquí si es necesario
 
     return render(request, 'comprar.html', {'evento': evento , 'entradas': entradas })
+
+
+def empresa_pendiente(request):
+    return render(request, 'empresa_pendiente.html')
+
+
+@empresa_verificada_required
+def crear_evento(request):
+    if request.method == 'POST':
+        form = EventoForm(request.POST, request.FILES)  # Manejar también archivos como la imagen
+        if form.is_valid():
+            evento = form.save(commit=False)
+            evento.creador = request.user  # Asignar el creador del evento como el usuario actual
+            evento.save()
+            return redirect('mis_eventos')  # Redirigir al listado de eventos de la empresa
+    else:
+        form = EventoForm()
+    
+    return render(request, 'events/crear_evento.html', {'form': form})
    
  
 

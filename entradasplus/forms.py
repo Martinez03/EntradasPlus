@@ -9,9 +9,26 @@ class EventoForm(forms.ModelForm):
         fields = ['nombre', 'descripcion', 'fecha_evento', 'lugar', 'capacidad']
 
 class EmpresaForm(forms.ModelForm):
+    username = forms.CharField(max_length=150, help_text="Nombre de usuario para iniciar sesión")
+    password = forms.CharField(widget=forms.PasswordInput, help_text="Contraseña")
+    email_usuario = forms.EmailField(help_text="Email para la cuenta de usuario")
+
     class Meta:
         model = Empresa
-        fields = ['nombre', 'descripcion', 'email', 'password']
+        fields = ['nombre', 'email', 'telefono', 'direccion']  # Campos de la empresa
+
+    def save(self, commit=True):
+        # Sobrescribimos el método save para crear el usuario junto con la empresa
+        empresa = super().save(commit=False)
+        user = User.objects.create_user(
+            username=self.cleaned_data['username'],
+            password=self.cleaned_data['password'],
+            email=self.cleaned_data['email_usuario']
+        )
+        empresa.usuario = user  # Asociar el usuario a la empresa
+        if commit:
+            empresa.save()
+        return empresa
 
 
 

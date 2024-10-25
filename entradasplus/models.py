@@ -2,15 +2,23 @@ from django.db import models
 
 # Create your models here.
 from django.db import models
-from django.contrib.auth.models import User
-
-
+from django.contrib.auth.models import User,AbstractUser
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+    
 class Empresa(models.Model):
+    ESTADO_CHOICES = [
+        ('pendiente', 'Pendiente'),
+        ('verificada', 'Verificada'),
+    ]
+
     nombre = models.CharField(max_length=200)
     descripcion = models.TextField(blank=True)
-    email = models.EmailField(blank=True)  # Correo electrónico único
-    password = models.CharField(blank=True,max_length=128)  # Contraseña encriptada
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    email = models.EmailField(unique=True)
+    telefono = models.CharField(max_length=15, blank=True)
+    direccion = models.CharField(max_length=200, blank=True)
+    estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='pendiente')  
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True) 
 
     def __str__(self):
         return self.nombre
@@ -24,7 +32,7 @@ class Evento(models.Model):
     capacidad = models.IntegerField()  # Capacidad máxima del evento
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     imagen = models.ImageField(upload_to='eventos/', blank=True, null=True)
-
+    
     def __str__(self):
         return self.nombre
 
@@ -55,4 +63,28 @@ class Reseña(models.Model):
     comentario = models.TextField()
     calificacion = models.IntegerField()  # Rango de 1 a 5, por ejemplo
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+class PerfilUsuario(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    dinero = models.IntegerField(default=0)
+    eventos_con_like = models.ManyToManyField('Evento', related_name='usuarios_con_like', blank=True)
+
+    def __str__(self):
+        return f"{self.user.username} Profile"
+    
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        PerfilUsuario.objects.create(user=instance)
+
+#this method to update profile when user is updated
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.perfilusuario.save()
+    
+    
+
+    
+
 

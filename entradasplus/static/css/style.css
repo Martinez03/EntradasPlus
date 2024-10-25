@@ -34,9 +34,8 @@
 .btn-grad {
     background-image: linear-gradient(to right, #348F50 0%, #56B4D3 51%, #348F50 100%);
     margin: 10px;
-    padding: 15px 45px;
+    padding: 10px 30px;
     text-align: center;
-    text-transform: uppercase;
     transition: 0.5s;
     background-size: 200% auto;
     color: white;            
@@ -55,7 +54,7 @@
 .btn-grad-logout {
     background-image: linear-gradient(to right, #e52d27 0%, #b31217  51%, #e52d27  100%);
     margin: 10px;
-    padding: 15px 45px;
+    padding: 10px 45px;
     text-align: center;
     text-transform: uppercase;
     transition: 0.5s;
