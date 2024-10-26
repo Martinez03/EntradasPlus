@@ -3,31 +3,39 @@
 
 /* Aplicar la fuente a todo el documento */
 * {
-    font-family: "Poppins", serif; /* Aplicar Poppins a todos los elementos */
+    font-family: "Poppins", serif;
+    /* Aplicar Poppins a todos los elementos */
 }
 
 /* Estilos para el navbar */
 .navbar {
-    padding: 1rem 2rem; /* Aumenta el espaciado del navbar */
-    font-size: 1.2rem;  /* Agranda el texto */
+    padding: 1rem 2rem;
+    /* Aumenta el espaciado del navbar */
+    font-size: 1.2rem;
+    /* Agranda el texto */
 }
 
 .navbar-nav {
-    margin-left: auto; /* Empuja los elementos al centro */
-    margin-right: auto; /* Centra los elementos */
+    margin-left: auto;
+    /* Empuja los elementos al centro */
+    margin-right: auto;
+    /* Centra los elementos */
 }
 
 .navbar-brand {
-    font-size: 1.5rem; /* Agranda el logo/marca */
+    font-size: 1.5rem;
+    /* Agranda el logo/marca */
 }
 
 .navbar-nav .nav-link {
-    padding-left: 1.5rem; /* Espaciado entre los enlaces */
+    padding-left: 1.5rem;
+    /* Espaciado entre los enlaces */
     padding-right: 1.5rem;
 }
 
 .btn-login {
-    margin-left: auto; /* Mueve el botón de inicio de sesión a la derecha */
+    margin-left: auto;
+    /* Mueve el botón de inicio de sesión a la derecha */
 }
 
 /* Estilos para el botón de inicio de sesión */
@@ -38,39 +46,41 @@
     text-align: center;
     transition: 0.5s;
     background-size: 200% auto;
-    color: white;            
+    color: white;
     box-shadow: 0 0 20px #eee;
     border-radius: 10px;
     display: block;
 }
 
 .btn-grad:hover {
-    background-position: right center; /* Cambiar dirección del cambio aquí */
+    background-position: right center;
+    /* Cambiar dirección del cambio aquí */
     color: #fff;
     text-decoration: none;
 }
 
-         
+
 .btn-grad-logout {
-    background-image: linear-gradient(to right, #e52d27 0%, #b31217  51%, #e52d27  100%);
+    background-image: linear-gradient(to right, #e52d27 0%, #b31217 51%, #e52d27 100%);
     margin: 10px;
     padding: 10px 45px;
     text-align: center;
     text-transform: uppercase;
     transition: 0.5s;
     background-size: 200% auto;
-    color: white;            
+    color: white;
     box-shadow: 0 0 20px #eee;
     border-radius: 10px;
     display: block;
-  }
+}
 
-  .btn-grad-logout:hover {
-    background-position: right center; /* change the direction of the change here */
+.btn-grad-logout:hover {
+    background-position: right center;
+    /* change the direction of the change here */
     color: #fff;
     text-decoration: none;
-  }
- 
+}
+
 
 
 .body-calendar {
@@ -79,11 +89,9 @@
     align-items: center;
     font-family: "Poppins", serif;
     background: rgb(238, 174, 202);
-    background: radial-gradient(
-        circle,
-        rgba(238, 174, 202, 1) 0%,
-        rgba(148, 187, 233, 1) 100%
-    );
+    background: radial-gradient(circle,
+            rgba(238, 174, 202, 1) 0%,
+            rgba(148, 187, 233, 1) 100%);
 }
 
 .h1 {
@@ -129,47 +137,49 @@
 .card-custom {
     position: relative;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    cursor:pointer;
-}
-
-.card-custom:hover {
-    background-color: rgba(0, 0, 0, 0.05); /* Un poco gris */
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
-}
-
-
-.btn-comprar:hover
-{
     cursor: pointer;
 }
 
-#dialog_base{
-    background:white;
-    background:rgba(255,255,255,0.8);
-    background-size: cover; /* Asegura que el fondo se estire */
-    background-position: center; /* Centra la imagen */
+.card-custom:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    /* Un poco gris */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    /* Sombra más pronunciada */
+}
+
+
+.btn-comprar:hover {
+    cursor: pointer;
+}
+
+#dialog_base {
+    background: white;
+    background: rgba(255, 255, 255, 0.8);
+    background-size: cover;
+    /* Asegura que el fondo se estire */
+    background-position: center;
+    /* Centra la imagen */
     background-repeat: no-repeat;
     position: absolute;
-    top:11%;
+    top: 11%;
     z-index: -50;
     height: 450px;
     width: 100%;
     object-fit: cover;
     overflow: hidden;
-  
-    filter:blur(8px);
-    
-  }
-  
-  #dialog_content{
-  
+
+    filter: blur(8px);
+
+}
+
+#dialog_content {
+
     top: 40%;
     overflow: hidden;
-  }
+}
 
-    .icon-entrada
-    {
-        background: linear-gradient(106.5deg, rgba(255, 215, 185, 0.91) 23%, rgba(223, 159, 247, 0.8) 93%); 
-        -webkit-background-clip: text; 
-        -webkit-text-fill-color: transparent;
-    }
+.icon-entrada {
+    background: linear-gradient(106.5deg, rgba(255, 215, 185, 0.91) 23%, rgba(223, 159, 247, 0.8) 93%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

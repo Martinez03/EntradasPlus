@@ -50,7 +50,7 @@
                                     </div>
                                     {% if request.user.is_authenticated %}
                                         <div class="col-md-1">
-                                            <i class="fa-regular fa-heart" style="cursor: pointer; font-size: 2rem; color: red;"></i>
+                                            <i type="submit" class="fa-regular fa-heart" style="cursor: pointer; font-size: 2rem; color: red;"></i>
                                         </div>
                                     {% else %}
                                         <div class="col-md-1" data-bs-toggle="modal" data-bs-target="#loginModal">
@@ -70,7 +70,7 @@
                                     <div class="col-md-4 mx-5 p-1 border rounded shadow text-center">
                                         <h5 class="mt-2">{{ evento.fecha_evento }}</h5>
                                     </div>
-                                    <a href="{% url 'comprar_evento' evento.id %}" class="col-md-3 border rounded-pill p-1 shadow text-center text-white bg-info" style="cursor: pointer; text-decoration: none;">
+                                    <a href="{% url 'comprar_evento' evento.id %}" class="col-md-3 border btn btn-info rounded-pill p-1 shadow text-center text-white bg-info" style="cursor: pointer; text-decoration: none;">
                                         <h5 class="mt-2"><i class="fa-solid fa-ticket"></i> Comprar</h5>
                                     </a>
                                 </div>

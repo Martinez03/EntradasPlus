@@ -14,24 +14,33 @@ from .decorators import empresa_verificada_required
 def index(request):
     # Usamos timezone.now() para manejar fechas con zona horaria si es necesario
     entradas = models.Entrada.objects.filter(evento__fecha_evento__gte=timezone.now()).order_by('evento__fecha_evento')
+    user_empresa = False
+    if request.user.is_authenticated:
+        try:
+            user_empresa = Empresa.objects.filter(usuario=request.user).exists()
+        except Empresa.DoesNotExist:
+            user_empresa = False
+    print(user_empresa)
     return render(request, 'index.html', {
-        'entradas': entradas 
+        'entradas': entradas ,
+        'user_empresa': user_empresa
     })
 
 def calendar(request):
     return render(request, 'calendar.html', {})
 
-def buscar_eventos(request):
-    query = request.GET.get('q', '')
-    if query:
-        eventos = models.Evento.objects.filter(
-            Q(nombre__icontains=query) |
-            Q(descripcion__icontains=query) |
-            Q(lugar__icontains=query)
-        )
-    else:
-        eventos = models.Evento.objects.all()
-    return render(request, 'eventos.html', {'eventos': eventos})
+def colaboradores(request):
+    return render(request, 'colaboradores.html')
+
+def miEmpresa(request):
+    if request.user.is_authenticated:
+        user_empresa = True
+        empresa = Empresa.objects.get(usuario=request.user)    
+    return render(request, 'mi_empresa.html', {
+        'empresa': empresa ,
+        'user_empresa': user_empresa
+    })
+   
 
 def login_view(request):
     if request.method == 'POST':
@@ -165,7 +174,9 @@ def crear_evento(request):
         form = EventoForm()
     
     return render(request, 'events/crear_evento.html', {'form': form})
-   
+
+
+
  
 
 

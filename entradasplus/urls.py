@@ -20,7 +20,9 @@ urlpatterns = [
     path('trending/', views.trending, name='trending'),
     path("register/", views.register, name="register"),
     path('contacta-con-nosotros/', views.contactar_empresa, name='contactar_empresa'),
-    path('empresa/pendiente/', views.empresa_pendiente)
+    path('empresa/pendiente/', views.empresa_pendiente),
+    path('colaboradores/', views.colaboradores),
+    path('mi_empresa/', views.miEmpresa)
 ]
 
 if settings.DEBUG:
