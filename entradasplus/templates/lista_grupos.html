@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <h2 class="text-center">Grupos</h2>
+        <a href="{% url 'crear_grupo' %}" class="btn btn-grad">Crear Grupo</a>
+    </div>
+
+    <!-- Barra de búsqueda -->
+    <div class="input-group mb-3 mt-3">
+        <form method="GET" action="{% url 'lista_grupos' %}" class="w-100">
+            <input type="text" name="q" class="form-control" placeholder="Buscar grupos...">
+            <button class="btn btn-primary" type="submit">Buscar</button>
+        </form>
+    </div>
+
+    <!-- Listado de Grupos -->
+    <div class="row">
+        {% for grupo in grupos %}
+        <div class="col-md-4 mb-3">
+            <div class="card card-custom shadow">
+                <div class="card-body">
+                    <h5 class="card-title">{{ grupo.nombre }}</h5>
+                    <p class="card-text">{{ grupo.descripcion|truncatewords:20 }}</p>
+                    <a href="{% url 'detalles_grupo' grupo.id %}" class="btn btn-grad">Ver Grupo</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No se encontraron grupos.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

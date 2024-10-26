@@ -10,6 +10,44 @@ from .forms import EventoForm,EmpresaForm,RegisterForm, MensajeForm
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from .decorators import empresa_verificada_required
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Grupo, SolicitudGrupo, MensajeGrupo
+from .forms import GrupoForm, MensajeGrupoForm
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def crear_grupo(request):
+    if request.method == 'POST':
+        form = GrupoForm(request.POST, request.FILES)
+        if form.is_valid():
+            grupo = form.save(commit=False)
+            grupo.admin = request.user
+            grupo.save()
+            grupo.usuarios.add(request.user)  # El admin se une automáticamente
+            return redirect('grupos')
+    else:
+        form = GrupoForm()
+    return render(request, 'crear_grupo.html', {'form': form})
+
+def lista_grupos(request):
+    grupos = Grupo.objects.all()
+    query = request.GET.get('q')
+    if query:
+        grupos = grupos.filter(nombre__icontains=query)
+    return render(request, 'lista_grupos.html', {'grupos': grupos})
+
+def detalles_grupo(request, grupo_id):
+    grupo = get_object_or_404(Grupo, pk=grupo_id)
+    mensajes = grupo.mensajes.all().order_by('fecha_creacion')
+    form = MensajeGrupoForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        mensaje = form.save(commit=False)
+        mensaje.grupo = grupo
+        mensaje.usuario = request.user
+        mensaje.save()
+        return redirect('detalles_grupo', grupo_id=grupo.id)
+    return render(request, 'detalles_grupo.html', {'grupo': grupo, 'mensajes': mensajes, 'form': form})
+
 
 def index(request):
     # Usamos timezone.now() para manejar fechas con zona horaria si es necesario
@@ -195,8 +233,117 @@ def crear_evento(request):
     
     return render(request, 'events/crear_evento.html', {'form': form})
 
+@login_required
+def crear_grupo(request):
+    # Verificar si el usuario ya tiene un grupo creado
+    if Grupo.objects.filter(admin=request.user).exists():
+        messages.warning(request, 'Solo puedes crear un grupo.')
+        return redirect('lista_grupos')
+
+    if request.method == 'POST':
+        form = GrupoForm(request.POST, request.FILES)
+        if form.is_valid():
+            grupo = form.save(commit=False)
+            grupo.admin = request.user
+            grupo.save()
+            grupo.usuarios.add(request.user)  # El admin se une automáticamente
+            return redirect('lista_grupos')
+    else:
+        form = GrupoForm()
+    return render(request, 'crear_grupo.html', {'form': form})
 
 
- 
+def lista_grupos(request):
+    grupos = Grupo.objects.all()
+    query = request.GET.get('q')
+    if query:
+        grupos = grupos.filter(nombre__icontains=query)
+    return render(request, 'lista_grupos.html', {'grupos': grupos})
 
+def detalles_grupo(request, grupo_id):
+    grupo = get_object_or_404(Grupo, pk=grupo_id)
+    mensajes = grupo.mensajes.all().order_by('fecha_creacion')
+    form = MensajeGrupoForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        mensaje = form.save(commit=False)
+        mensaje.grupo = grupo
+        mensaje.usuario = request.user
+        mensaje.save()
+        return redirect('detalles_grupo', grupo_id=grupo.id)
+    return render(request, 'detalles_grupo.html', {'grupo': grupo, 'mensajes': mensajes, 'form': form})
 
+@login_required
+def unirse_grupo(request, grupo_id):
+    grupo = get_object_or_404(Grupo, pk=grupo_id)
+
+    # Si el grupo es público, añadir al usuario
+    if grupo.tipo == 'publico':
+        grupo.usuarios.add(request.user)
+        messages.success(request, 'Te has unido al grupo exitosamente.')
+    else:
+        # Si es por invitación, crea una solicitud
+        if not SolicitudGrupo.objects.filter(grupo=grupo, usuario=request.user).exists():
+            SolicitudGrupo.objects.create(grupo=grupo, usuario=request.user)
+            messages.info(request, 'Tu solicitud de unión ha sido enviada. Espera la aprobación del administrador.')
+        else:
+            messages.warning(request, 'Ya has enviado una solicitud para unirte a este grupo.')
+
+    return redirect('detalles_grupo', grupo_id=grupo.id)
+
+@login_required
+def solicitar_union_grupo(request, grupo_id):
+    grupo = get_object_or_404(Grupo, pk=grupo_id)
+
+    # Verificar si el grupo es por invitación
+    if grupo.tipo == 'invitacion':
+        # Evitar solicitudes duplicadas
+        if not SolicitudGrupo.objects.filter(grupo=grupo, usuario=request.user).exists():
+            SolicitudGrupo.objects.create(grupo=grupo, usuario=request.user)
+            messages.info(request, 'Tu solicitud de unión ha sido enviada. Espera la aprobación del administrador.')
+        else:
+            messages.warning(request, 'Ya has enviado una solicitud para unirte a este grupo.')
+    else:
+        messages.error(request, 'Este grupo es público. Únete directamente desde la página de detalles del grupo.')
+
+    return redirect('detalles_grupo', grupo_id=grupo.id)
+
+@login_required
+def gestionar_grupo(request, grupo_id):
+    grupo = get_object_or_404(Grupo, pk=grupo_id)
+
+    # Verificar si el usuario es el administrador del grupo
+    if request.user != grupo.admin:
+        return redirect('detalles_grupo', grupo_id=grupo.id)
+
+    solicitudes = SolicitudGrupo.objects.filter(grupo=grupo)
+
+    if request.method == 'POST':
+        accion = request.POST.get('accion')
+        solicitud_id = request.POST.get('solicitud_id')
+        solicitud = get_object_or_404(SolicitudGrupo, id=solicitud_id)
+
+        if accion == 'aceptar':
+            grupo.usuarios.add(solicitud.usuario)
+            solicitud.delete()
+            messages.success(request, f"{solicitud.usuario.username} ha sido añadido al grupo.")
+        elif accion == 'rechazar':
+            solicitud.delete()
+            messages.info(request, f"Has rechazado la solicitud de {solicitud.usuario.username}.")
+
+    return render(request, 'gestionar_grupo.html', {
+        'grupo': grupo,
+        'solicitudes': solicitudes,
+    })
+
+@login_required
+def eliminar_mensaje_grupo(request, mensaje_id):
+    mensaje = get_object_or_404(MensajeGrupo, pk=mensaje_id)
+    
+    # Verificar que el usuario sea el administrador del grupo
+    if request.user == mensaje.grupo.admin:
+        mensaje.delete()
+        messages.success(request, 'Mensaje eliminado exitosamente.')
+    else:
+        messages.error(request, 'No tienes permiso para eliminar este mensaje.')
+    
+    return redirect('detalles_grupo', grupo_id=mensaje.grupo.id)

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mt-3">Administrar {{ grupo.nombre }}</h2>
+
+    <!-- Solicitudes de unión pendientes -->
+    <h3>Solicitudes de Unión</h3>
+    {% for solicitud in solicitudes %}
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span>{{ solicitud.usuario.username }} quiere unirse</span>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="solicitud_id" value="{{ solicitud.id }}">
+                <button name="accion" value="aceptar" class="btn btn-success">Aceptar</button>
+                <button name="accion" value="rechazar" class="btn btn-danger">Rechazar</button>
+            </form>
+        </div>
+    {% empty %}
+        <p>No hay solicitudes pendientes.</p>
+    {% endfor %}
+</div>
+{% endblock %}

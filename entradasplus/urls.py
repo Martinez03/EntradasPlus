@@ -24,6 +24,13 @@ urlpatterns = [
     path('colaboradores/', views.colaboradores),
     path('mi_empresa/', views.miEmpresa),
     path('evento/<int:evento_id>/chat/', views.chat_evento, name='chat_evento'),
+    path('grupos/', views.lista_grupos, name='lista_grupos'),
+    path('grupos/crear/', views.crear_grupo, name='crear_grupo'),
+    path('grupos/<int:grupo_id>/', views.detalles_grupo, name='detalles_grupo'),
+    path('grupos/<int:grupo_id>/unirse/', views.unirse_grupo, name='unirse_grupo'),
+    path('grupos/<int:grupo_id>/solicitar_union/', views.solicitar_union_grupo, name='solicitar_union_grupo'),
+    path('grupos/<int:grupo_id>/gestionar/', views.gestionar_grupo, name='gestionar_grupo'),
+    path('grupos/mensajes/<int:mensaje_id>/eliminar/', views.eliminar_mensaje_grupo, name='eliminar_mensaje_grupo'),
 ]
 
 if settings.DEBUG:

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Evento,Empresa, Mensaje
+from .models import Evento, Empresa, Mensaje, Grupo, SolicitudGrupo, MensajeGrupo 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -44,3 +44,13 @@ class MensajeForm(forms.ModelForm):
         widgets = {
             'contenido': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Escribe un mensaje...'}),
         }
+
+class GrupoForm(forms.ModelForm):
+    class Meta:
+        model = Grupo
+        fields = ['nombre', 'descripcion', 'tipo', 'foto']
+
+class MensajeGrupoForm(forms.ModelForm):
+    class Meta:
+        model = MensajeGrupo
+        fields = ['contenido']
