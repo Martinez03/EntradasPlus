@@ -75,13 +75,23 @@
             <!-- Si un usuario está autenticado, mostrar "Cerrar sesión" para usuario -->
             <div class="dropdown">
                 <!-- Imagen del avatar que actúa como botón para desplegar el menú -->
-                <img src="{{ user.perfilusuario.avatar.url }}" 
-                     class="rounded-circle shadow dropdown-toggle" 
-                     style="width: 50px; cursor: pointer;" 
-                     alt="Avatar" 
-                     id="avatarDropdown" 
-                     data-bs-toggle="dropdown" 
-                     aria-expanded="false">
+                {% if user.perfilusuario.avatar %}
+                    <img src="{{ user.perfilusuario.avatar.url }}" 
+                        class="rounded-circle shadow dropdown-toggle" 
+                        style="width: 50px; cursor: pointer;" 
+                        alt="Avatar" 
+                        id="avatarDropdown" 
+                        data-bs-toggle="dropdown" 
+                        aria-expanded="false">
+                {% else %}
+                    <img src="{% static 'people.png' %}" 
+                        class="rounded-circle shadow dropdown-toggle" 
+                        style="width: 50px; cursor: pointer;" 
+                        alt="Avatar" 
+                        id="avatarDropdown" 
+                        data-bs-toggle="dropdown" 
+                        aria-expanded="false">
+                {% endif %}
                      
                 <!-- Menú desplegable -->
                 <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="avatarDropdown">

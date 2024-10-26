@@ -66,12 +66,21 @@ class Reseña(models.Model):
 
 class PerfilUsuario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', default='people.png', null=True, blank=True)
     dinero = models.IntegerField(default=0)
     eventos_con_like = models.ManyToManyField('Evento', related_name='usuarios_con_like', blank=True)
 
     def __str__(self):
         return f"{self.user.username} Profile"
+    
+class Mensaje(models.Model):
+    evento = models.ForeignKey(Evento, on_delete=models.CASCADE, related_name='mensajes')
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    contenido = models.TextField()
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.usuario.username} - {self.evento.nombre}"
     
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

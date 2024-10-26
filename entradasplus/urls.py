@@ -22,7 +22,8 @@ urlpatterns = [
     path('contacta-con-nosotros/', views.contactar_empresa, name='contactar_empresa'),
     path('empresa/pendiente/', views.empresa_pendiente),
     path('colaboradores/', views.colaboradores),
-    path('mi_empresa/', views.miEmpresa)
+    path('mi_empresa/', views.miEmpresa),
+    path('evento/<int:evento_id>/chat/', views.chat_evento, name='chat_evento'),
 ]
 
 if settings.DEBUG:

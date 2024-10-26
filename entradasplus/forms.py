@@ -1,5 +1,5 @@
 from django import forms
-from .models import Evento,Empresa
+from .models import Evento,Empresa, Mensaje
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -30,11 +30,17 @@ class EmpresaForm(forms.ModelForm):
             empresa.save()
         return empresa
 
-
-
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
     class Meta:
         model = User
         fields = ["username", "email", "password1", "password2"]
+
+class MensajeForm(forms.ModelForm):
+    class Meta:
+        model = Mensaje
+        fields = ['contenido']
+        widgets = {
+            'contenido': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Escribe un mensaje...'}),
+        }

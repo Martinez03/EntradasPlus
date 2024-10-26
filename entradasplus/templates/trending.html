@@ -35,8 +35,7 @@
             </div>
 
             <!-- Modal del evento -->
-            <div class="modal fade" id="modal-{{ evento.id }}" tabindex="-1" aria-labelledby="modalLabel{{ evento.id }}"
-                aria-hidden="true">
+            <div class="modal fade" id="modal-{{ evento.id }}" tabindex="-1" aria-labelledby="modalLabel{{ evento.id }}" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         {% if evento.imagen %}
@@ -61,7 +60,7 @@
                                 <hr>
                                 <h5><i class="fa-solid fa-location-dot text-danger"></i> {{ evento.lugar }}</h5>
                                 <p>{{ evento.descripcion }}</p>
-
+            
                                 <hr class="my-2">
                                 <div class="row">
                                     <div class="col-md-3 p-1 ms-3 rounded-pill border text-center bg-success text-white shadow">
@@ -73,6 +72,9 @@
                                     <a href="{% url 'comprar_evento' evento.id %}" class="col-md-3 border btn btn-info rounded-pill p-1 shadow text-center text-white bg-info" style="cursor: pointer; text-decoration: none;">
                                         <h5 class="mt-2"><i class="fa-solid fa-ticket"></i> Comprar</h5>
                                     </a>
+                                </div>
+                                <div class="mt-4 text-center">
+                                    <a href="{% url 'chat_evento' evento.id %}" class="btn btn-secondary"><i class="fa fa-comments"></i> Chat del Evento</a>
                                 </div>
                             </div>
                         </div>

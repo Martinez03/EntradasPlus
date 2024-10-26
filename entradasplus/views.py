@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from . import models
-from .models import Empresa, Evento
+from .models import Empresa, Evento, Mensaje
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from datetime import datetime
 from django.db.models import Q  # Asegúrate de importar Q para las búsquedas
 from django.utils import timezone  # Para manejar fechas con soporte de zona horaria
-from .forms import EventoForm,EmpresaForm,RegisterForm
+from .forms import EventoForm,EmpresaForm,RegisterForm, MensajeForm
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from .decorators import empresa_verificada_required
@@ -160,6 +160,26 @@ def comprar(request, evento_id):
 def empresa_pendiente(request):
     return render(request, 'empresa_pendiente.html')
 
+def chat_evento(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
+    mensajes = evento.mensajes.order_by('fecha_creacion')  # Mensajes ordenados cronológicamente
+
+    if request.method == 'POST':
+        form = MensajeForm(request.POST)
+        if form.is_valid():
+            mensaje = form.save(commit=False)
+            mensaje.evento = evento
+            mensaje.usuario = request.user
+            mensaje.save()
+            return redirect('chat_evento', evento_id=evento_id)  # Refresca la página después de enviar el mensaje
+    else:
+        form = MensajeForm()
+
+    return render(request, 'chat_evento.html', {
+        'evento': evento,
+        'mensajes': mensajes,
+        'form': form,
+    })
 
 @empresa_verificada_required
 def crear_evento(request):
