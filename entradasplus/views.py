@@ -128,7 +128,7 @@ def register(request):
             messages.success(request, '¡Registro exitoso! Ahora puedes iniciar sesión.')
             return redirect('/')  # Redirige a la página principal o la ruta deseada después de registrarse
         else:
-            messages.error( request,'Hubo un error al crear el usuario, intentelo mas tarde.')
+            messages.error( request,'La contraseña debe contener caracteres y numeros')
             return redirect('/')  
         
 def contactar_empresa(request):
@@ -197,7 +197,7 @@ def comprar_evento(request, evento_id):
         )
 
         messages.success(request, '¡Compra realizada con éxito!')
-        return redirect('perfil')
+        return redirect('home')
 
     return redirect('comprar', evento_id=evento.id)
     

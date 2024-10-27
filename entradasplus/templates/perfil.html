@@ -25,7 +25,14 @@
             <ul class="list-group mb-4">
                 {% for pedido in historial_compras %}
                     <li class="list-group-item">
-                        {{ pedido.entrada.tipo }} - {{ pedido.entrada.evento.nombre }} ({{ pedido.fecha_compra }}) - {{ pedido.total }}€
+                        Usted ha comprado {{ pedido.cantidad }} 
+                        {% if pedido.cantidad == 1 %}
+                            entrada
+                        {% else %}
+                            entradas
+                        {% endif %}
+                        - {{ pedido.entrada.tipo }} para el evento "{{ pedido.entrada.evento.nombre }}" (comprado el {{ pedido.fecha_compra|date:"d/m/Y H:i" }}) - Total pagado: {{ pedido.total }}€
+
                     </li>
                 {% empty %}
                     <li class="list-group-item">No hay compras registradas.</li>
