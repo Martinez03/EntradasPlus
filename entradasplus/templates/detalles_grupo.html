@@ -21,29 +21,54 @@
 
         <!-- Columna de Chat -->
         <div class="col-md-9">
-            <div id="chat-mensajes" class="border p-3 rounded mb-3" style="height: 400px; overflow-y: auto;">
-                {% for mensaje in mensajes %}
-                    <div class="mb-2">
-                        <strong>{{ mensaje.usuario.username }}:</strong>
-                        <span>{{ mensaje.contenido }}</span>
-                        <small class="text-muted">{{ mensaje.fecha_creacion|date:"H:i d/m/Y" }}</small>
-                        {% if user == grupo.admin %}
-                            <a href="{% url 'eliminar_mensaje_grupo' mensaje.id %}" class="text-danger">Eliminar</a>
-                        {% endif %}
-                    </div>
-                {% empty %}
-                    <p class="text-muted text-center">No hay mensajes en este grupo.</p>
-                {% endfor %}
-            </div>
-
-            <!-- Formulario para enviar mensajes -->
-            <form method="POST" class="mt-3">
-                {% csrf_token %}
-                <div class="input-group">
-                    <textarea name="contenido" class="form-control" rows="2" placeholder="Escribe un mensaje..."></textarea>
-                    <button type="submit" class="btn btn-grad ms-2">Enviar</button>
+            {% if user in grupo.usuarios.all %}
+                <div id="chat-mensajes" class="border p-3 rounded mb-3" style="height: 400px; overflow-y: auto;">
+                    {% for mensaje in mensajes %}
+                        <div class="mb-2">
+                            <strong>{{ mensaje.usuario.username }}:</strong>
+                            <span>{{ mensaje.contenido }}</span>
+                            <small class="text-muted">{{ mensaje.fecha_creacion|date:"H:i d/m/Y" }}</small>
+                            {% if user == grupo.admin %}
+                                <a href="{% url 'eliminar_mensaje_grupo' mensaje.id %}" class="text-danger">Eliminar</a>
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        <p class="text-muted text-center">No hay mensajes en este grupo.</p>
+                    {% endfor %}
                 </div>
-            </form>
+
+                <!-- Formulario para enviar mensajes -->
+                <form method="POST" class="mt-3">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <textarea name="contenido" class="form-control" rows="2" placeholder="Escribe un mensaje..."></textarea>
+                        <button type="submit" class="btn btn-grad ms-2">Enviar</button>
+                    </div>
+                </form>
+            {% else %}
+                <!-- Botón para unirse al grupo o mostrar "Pendiente" / "Cancelar Solicitud" si ya se ha solicitado unión -->
+                <div class="text-center mt-4">
+                    {% if grupo.tipo == 'publico' %}
+                        <form method="POST" action="{% url 'unirse_grupo' grupo.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-grad">Unirse</button>
+                        </form>
+                    {% else %}
+                        {% if solicitud_pendiente %}
+                            <form method="POST" action="{% url 'cancelar_solicitud_grupo' grupo.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-warning">Cancelar Solicitud</button>
+                            </form>
+                        {% else %}
+                            <form method="POST" action="{% url 'unirse_grupo' grupo.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-grad">Solicitar</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                    <p class="text-muted mt-3">Debes unirte al grupo para ver el chat.</p>
+                </div>
+            {% endif %}
         </div>
     </div>
 
