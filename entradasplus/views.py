@@ -6,7 +6,7 @@ from django.contrib import messages
 from datetime import datetime
 from django.db.models import Q  # Asegúrate de importar Q para las búsquedas
 from django.utils import timezone  # Para manejar fechas con soporte de zona horaria
-from .forms import EventoForm,EmpresaForm,RegisterForm, MensajeForm
+from .forms import EventoForm,EmpresaForm,RegisterForm, MensajeForm, PerfilForm
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from .decorators import empresa_verificada_required
@@ -14,6 +14,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Grupo, SolicitudGrupo, MensajeGrupo
 from .forms import GrupoForm, MensajeGrupoForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from .models import Pedido, Grupo, PerfilUsuario
 
 @login_required
 def crear_grupo(request):
@@ -372,3 +375,35 @@ def eliminar_grupo(request, grupo_id):
         return redirect('lista_grupos')
 
     return render(request, 'confirmar_eliminar_grupo.html', {'grupo': grupo})
+
+@login_required
+def perfil(request):
+    perfil_usuario = request.user.perfilusuario
+    historial_compras = Pedido.objects.filter(usuario=request.user)
+    grupos_creados = Grupo.objects.filter(admin=request.user)
+    
+    return render(request, 'perfil.html', {
+        'perfil_usuario': perfil_usuario,
+        'historial_compras': historial_compras,
+        'grupos_creados': grupos_creados,
+    })
+
+@login_required
+def editar_perfil(request):
+    perfil_usuario = request.user.perfilusuario
+    if request.method == 'POST':
+        form = PerfilForm(request.POST, request.FILES, instance=perfil_usuario)
+        if form.is_valid():
+            form.save()
+            return redirect('perfil')
+    else:
+        form = PerfilForm(instance=perfil_usuario)
+    
+    return render(request, 'editar_perfil.html', {'form': form})
+                  
+@login_required
+def eliminar_cuenta(request):
+    if request.method == 'POST':
+        request.user.delete()
+        return redirect('home')  # Redirige al inicio tras eliminar la cuenta
+    return render(request, 'confirmar_eliminar_cuenta.html')

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Perfil de {{ user.username }}</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <h4>Información Personal</h4>
+            <img src="{{ perfil_usuario.avatar.url }}" alt="Avatar" class="img-thumbnail mb-3">
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Descripción:</strong> {{ perfil_usuario.descripcion }}</p>
+            <a href="{% url 'editar_perfil' %}" class="btn btn-primary">Editar Información</a>
+            <a href="{% url 'eliminar_cuenta' %}" class="btn btn-danger mt-2">Eliminar Cuenta</a>
+        </div>
+        
+        <div class="col-md-8">
+            <h4>Historial de Compras</h4>
+            <ul class="list-group mb-4">
+                {% for pedido in historial_compras %}
+                    <li class="list-group-item">
+                        {{ pedido.entrada.tipo }} - {{ pedido.entrada.evento.nombre }} ({{ pedido.fecha_compra }}) - {{ pedido.total }}€
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">No hay compras registradas.</li>
+                {% endfor %}
+            </ul>
+
+            <h4>Grupos Creados</h4>
+            <ul class="list-group">
+                {% for grupo in grupos_creados %}
+                    <li class="list-group-item">
+                        <a href="{% url 'detalles_grupo' grupo.id %}">{{ grupo.nombre }}</a>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">No has creado ningún grupo.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

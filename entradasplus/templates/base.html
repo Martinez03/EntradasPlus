@@ -1,3 +1,6 @@
+{% load static %}
+{% load socialaccount %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -101,12 +104,13 @@
                 <!-- Menú desplegable -->
                 <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="avatarDropdown">
                     <li>
-                        <a class="dropdown-item" href="/">Perfil</a>
+                        <a class="dropdown-item" href="{% url 'perfil' %}">Perfil</a>
                     </li>
                     <li>
                         <a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a>
                     </li>
                 </ul>
+
             </div>
             {% elif request.session.empresa_id %}
             <!-- Si una empresa está autenticada, mostrar "Cerrar sesión" para empresa -->
@@ -126,105 +130,82 @@
 
 <!-- Modal de Inicio de Sesión -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h2 class="modal-title" id="loginModalLabel">Regístrate o Inicia Sesión</h2>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-              <form method="POST" action="{% url 'login' %}">
-                  {% csrf_token %}
-                  <div class="mb-3">
-                      <h5 for="username" class="form-label large-label">Usuario</h5>
-                      <input type="text" class="form-control" id="username" name="username" required>
-                  </div>
-                  <div class="mb-3">
-                      <h5 for="password" class="form-label large-label">Contraseña</h5>
-                      <input type="password" class="form-control" id="password" name="password" required>
-                  </div>
-                  <!-- Checkbox de "Recuérdame" -->
-                  <div class="mb-3 form-check">
-                      <input type="checkbox" class="form-check-input" id="rememberMe">
-                      <label class="form-check-label" for="rememberMe">Recuérdame</label>
-                  </div>
-                  <button type="submit" class="btn btn-primary w-100 shadow">Iniciar Sesión</button>
-
-                  <!-- Botón de Registrarse que abre el modal de registro -->
-                  <a href="#" class="btn btn-outline-secondary rounded shadow w-100 mt-3" data-bs-toggle="modal" data-bs-target="#registerModal">
-                      Registrarse
-                  </a>
-              </form>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="loginModalLabel">Regístrate o Inicia Sesión</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <h5 for="username" class="form-label large-label">Usuario</h5>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <h5 for="password" class="form-label large-label">Contraseña</h5>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <!-- Checkbox de "Recuérdame" -->
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Recuérdame</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 shadow">Iniciar Sesión</button>
+                </form>
+                <!-- Botón de inicio de sesión con Google -->
+                <a href="{% provider_login_url 'google' %}" class="btn btn-outline-danger rounded shadow w-100 mt-3">
+                    <i class="fab fa-google"></i> Iniciar sesión con Google
+                </a>                
+  
+                <!-- Botón de Registrarse que abre el modal de registro -->
+                <a href="#" class="btn btn-outline-secondary rounded shadow w-100 mt-3" data-bs-toggle="modal" data-bs-target="#registerModal">
+                    Registrarse
+                </a>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+  <!-- Modal de Registro -->
+  <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h2 class="modal-title" id="registerModalLabel">Crear una Cuenta</h2>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <form method="POST" action="{% url 'register' %}" class="form-group">
+                      {% csrf_token %}
+                      <div class="mb-3">
+                          <label for="id_username" class="form-label">Usuario</label>
+                          <input type="text" name="username" class="form-control" id="id_username">
+                      </div>
+                      <div class="mb-3">
+                          <label for="id_email" class="form-label">Correo Electrónico</label>
+                          <input type="email" name="email" class="form-control" id="id_email">
+                      </div>
+                      <div class="mb-3">
+                          <label for="id_password1" class="form-label">Contraseña</label>
+                          <input type="password" name="password1" class="form-control" id="id_password1">
+                      </div>
+                      <div class="mb-3">
+                          <label for="id_password2" class="form-label">Confirmar Contraseña</label>
+                          <input type="password" name="password2" class="form-control" id="id_password2">
+                      </div>
+                      <button type="submit" class="btn btn-success w-100">Registrarse</button>
+                  </form>
+  
+                    <!-- Botón de Registro con Google -->
+                    <a href="{% provider_login_url 'google' %}" class="btn btn-outline-danger rounded shadow w-100 mt-3">
+                        <i class="fab fa-google"></i> Registrarse con Google
+                    </a>                
+              </div>
           </div>
       </div>
-  </div>
-</div>
-
-<!-- Modal de Registro -->
-<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h2 class="modal-title" id="registerModalLabel">Crear una Cuenta</h2>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-              <!-- Formulario de registro sin crispy -->
-              <form method="POST" action="{% url 'register' %}" class="form-group">
-                  {% csrf_token %}
-                  
-                  <!-- Campo de Usuario -->
-                  <div class="mb-3">
-                      <label for="id_username" class="form-label">Usuario</label>
-                      <input type="text" name="username" class="form-control" id="id_username" value="{{ form.username.value }}">
-                      {% if form.username.errors %}
-                          <div class="text-danger">
-                              {{ form.username.errors }}
-                          </div>
-                      {% endif %}
-                  </div>
-
-                  <!-- Campo de Correo Electrónico -->
-                  <div class="mb-3">
-                      <label for="id_email" class="form-label">Correo Electrónico</label>
-                      <input type="email" name="email" class="form-control" id="id_email" value="{{ form.email.value }}">
-                      {% if form.email.errors %}
-                          <div class="text-danger">
-                              {{ form.email.errors }}
-                          </div>
-                      {% endif %}
-                  </div>
-
-                  <!-- Campo de Contraseña -->
-                  <div class="mb-3">
-                      <label for="id_password1" class="form-label">Contraseña</label>
-                      <input type="password" name="password1" class="form-control" id="id_password1">
-                      {% if form.password1.errors %}
-                          <div class="text-danger">
-                              {{ form.password1.errors }}
-                          </div>
-                      {% endif %}
-                  </div>
-
-                  <!-- Campo de Confirmar Contraseña -->
-                  <div class="mb-3">
-                      <label for="id_password2" class="form-label">Confirmar Contraseña</label>
-                      <input type="password" name="password2" class="form-control" id="id_password2">
-                      {% if form.password2.errors %}
-                          <div class="text-danger">
-                              {{ form.password2.errors }}
-                          </div>
-                      {% endif %}
-                  </div>
-
-                  <!-- Botón de Enviar -->
-                  <button type="submit" class="btn btn-success w-100">Registrarse</button>
-              </form>
-          </div>
-      </div>
-  </div>
-</div>
-
+  </div>  
 
 
 <!-- Modal de Inicio de Sesión para Empresa -->

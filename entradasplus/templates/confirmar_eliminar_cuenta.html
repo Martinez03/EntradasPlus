@@ -1,0 +1,12 @@
+<!-- confirmar_eliminar_cuenta.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2>¿Estás seguro de que deseas eliminar tu cuenta?</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Eliminar Cuenta</button>
+        <a href="{% url 'perfil' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

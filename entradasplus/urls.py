@@ -3,10 +3,7 @@ from . import views
 from django.conf import settings
 from django.conf.urls.static import static
 
-
-
 urlpatterns = [
-   
     path('', views.index, name='home'),
     path('calendar', views.calendar, name='calendar'),
     path('login', views.login_view, name='login'),
@@ -32,8 +29,10 @@ urlpatterns = [
     path('grupos/<int:grupo_id>/gestionar/', views.gestionar_grupo, name='gestionar_grupo'),
     path('grupos/mensajes/<int:mensaje_id>/eliminar/', views.eliminar_mensaje_grupo, name='eliminar_mensaje_grupo'),
     path('grupos/<int:grupo_id>/eliminar/', views.eliminar_grupo, name='eliminar_grupo'),
+    path('perfil/', views.perfil, name='perfil'),
+    path('perfil/editar/', views.editar_perfil, name='editar_perfil'),
+    path('perfil/eliminar/', views.eliminar_cuenta, name='eliminar_cuenta'),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

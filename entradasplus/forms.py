@@ -1,5 +1,5 @@
 from django import forms
-from .models import Evento, Empresa, Mensaje, Grupo, SolicitudGrupo, MensajeGrupo 
+from .models import Evento, Empresa, Mensaje, Grupo, SolicitudGrupo, MensajeGrupo, PerfilUsuario
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -54,3 +54,8 @@ class MensajeGrupoForm(forms.ModelForm):
     class Meta:
         model = MensajeGrupo
         fields = ['contenido']
+
+class PerfilForm(forms.ModelForm):
+    class Meta:
+        model = PerfilUsuario
+        fields = ['avatar', 'dinero']
