@@ -1,11 +1,38 @@
-<!-- editar_perfil.html -->
 {% extends "base.html" %}
 {% block content %}
 <div class="container mt-5">
     <h2>Editar Perfil</h2>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
+
+        <!-- Campos del usuario -->
+        <div class="mb-3">
+            <label for="id_first_name" class="form-label">Nombre</label>
+            {{ form.first_name }}
+        </div>
+        <div class="mb-3">
+            <label for="id_last_name" class="form-label">Apellidos</label>
+            {{ form.last_name }}
+        </div>
+        <div class="mb-3">
+            <label for="id_email" class="form-label">Correo Electrónico</label>
+            {{ form.email }}
+        </div>
+
+        <!-- Campos del perfil de usuario -->
+        <div class="mb-3">
+            <label for="id_avatar" class="form-label">Avatar</label>
+            {{ form.avatar }}
+        </div>
+        <div class="mb-3">
+            <label for="id_dinero" class="form-label">Dinero</label>
+            {{ form.dinero }}
+        </div>
+        <div class="mb-3">
+            <label for="id_descripcion" class="form-label">Descripción</label>
+            {{ form.descripcion }}
+        </div>
+
         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
     </form>
 </div>

@@ -56,6 +56,31 @@ class MensajeGrupoForm(forms.ModelForm):
         fields = ['contenido']
 
 class PerfilForm(forms.ModelForm):
+    # Campos adicionales de User
+    first_name = forms.CharField(max_length=30, required=False, label="Nombre")
+    last_name = forms.CharField(max_length=30, required=False, label="Apellidos")
+    email = forms.EmailField(required=True, label="Correo Electrónico")
+
     class Meta:
         model = PerfilUsuario
-        fields = ['avatar', 'dinero']
+        fields = ['avatar', 'dinero', 'descripcion']  # Campos de PerfilUsuario
+
+    def __init__(self, *args, **kwargs):
+        super(PerfilForm, self).__init__(*args, **kwargs)
+        # Si hay un usuario asociado, inicializamos los datos en los campos adicionales
+        if self.instance and self.instance.user:
+            self.fields['first_name'].initial = self.instance.user.first_name
+            self.fields['last_name'].initial = self.instance.user.last_name
+            self.fields['email'].initial = self.instance.user.email
+
+    def save(self, commit=True):
+        # Guardar los datos del perfil y del usuario
+        perfil_usuario = super().save(commit=False)
+        perfil_usuario.user.first_name = self.cleaned_data['first_name']
+        perfil_usuario.user.last_name = self.cleaned_data['last_name']
+        perfil_usuario.user.email = self.cleaned_data['email']
+        
+        if commit:
+            perfil_usuario.user.save()  # Guardar datos del usuario
+            perfil_usuario.save()  # Guardar datos del perfil
+        return perfil_usuario

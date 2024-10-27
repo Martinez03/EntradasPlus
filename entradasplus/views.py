@@ -161,56 +161,45 @@ def comprar(request, evento_id):
 
     return render(request, 'comprar.html', {'evento': evento , 'entradas': entradas })
 
-@login_required
-def comprar_entrada(request, entrada_id):
-    # Obtener la entrada específica
-    entrada = get_object_or_404(Entrada, id=entrada_id)
+def comprar_evento(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
     perfil_usuario = PerfilUsuario.objects.get(user=request.user)
-    
-    # Verificar que haya suficientes entradas disponibles
-    if entrada.cantidad_disponible <= 0:
-        messages.error(request, 'Lo sentimos, no hay entradas disponibles.')
-        return redirect('comprar_evento', evento_id=entrada.evento.id)
 
     if request.method == 'POST':
-        # Obtener la cantidad de entradas solicitada (por defecto, 1)
+        entrada_id = request.POST.get('entrada_id')
         cantidad = int(request.POST.get('cantidad', 1))
+        entrada = get_object_or_404(Entrada, id=entrada_id)
+
         total = cantidad * entrada.precio
-        
-        # Mensaje de depuración
-        print(f"Cantidad solicitada: {cantidad}, Total de la compra: {total}, Dinero del usuario: {perfil_usuario.dinero}")
-        
-        # Verificar si hay suficientes entradas para la cantidad deseada
+
+        # Verificar disponibilidad de entradas y saldo del usuario
         if cantidad > entrada.cantidad_disponible:
             messages.error(request, f'Solo quedan {entrada.cantidad_disponible} entradas disponibles.')
-            return redirect('comprar_evento', evento_id=entrada.evento.id)
-        
-        # Verificar si el usuario tiene suficiente dinero
+            return redirect('comprar', evento_id=evento.id)
+
         if perfil_usuario.dinero < total:
-            messages.error(request, f'No tienes suficiente dinero para esta compra. Te faltan {total - perfil_usuario.dinero}€.')
-            return redirect('comprar_evento', evento_id=entrada.evento.id)
-        
-        # Crear el pedido
-        pedido = Pedido.objects.create(
+            messages.error(request, f'No tienes suficiente dinero. Te faltan {total - perfil_usuario.dinero}€.')
+            return redirect('comprar', evento_id=evento.id)
+
+        # Actualizar inventario y saldo del usuario
+        entrada.cantidad_disponible -= cantidad
+        perfil_usuario.dinero -= total
+        entrada.save()
+        perfil_usuario.save()
+
+        # Registrar el pedido
+        Pedido.objects.create(
             usuario=request.user,
             entrada=entrada,
             cantidad=cantidad,
             fecha_compra=timezone.now(),
             total=total
         )
-        
-        # Actualizar la cantidad disponible de entradas
-        entrada.cantidad_disponible -= cantidad
-        entrada.save()
-        
-        # Descontar el dinero del perfil del usuario
-        perfil_usuario.dinero -= total
-        perfil_usuario.save()
 
         messages.success(request, '¡Compra realizada con éxito!')
         return redirect('perfil')
-    
-    return render(request, 'comprar.html', {'entrada': entrada})
+
+    return redirect('comprar', evento_id=evento.id)
     
 def empresa_pendiente(request):
     return render(request, 'empresa_pendiente.html')
@@ -409,12 +398,12 @@ def editar_perfil(request):
         form = PerfilForm(request.POST, request.FILES, instance=perfil_usuario)
         if form.is_valid():
             form.save()
-            return redirect('perfil')
+            return redirect('perfil')  # Redirige al perfil del usuario después de guardar
     else:
         form = PerfilForm(instance=perfil_usuario)
     
     return render(request, 'editar_perfil.html', {'form': form})
-                  
+                
 @login_required
 def eliminar_cuenta(request):
     if request.method == 'POST':
