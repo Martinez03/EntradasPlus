@@ -1,22 +1,52 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+
 <div class="container-fluid">
+    <!-- Título común para todos los usuarios -->
     <div class="row mt-3">
-        <div class="col-md-2">
-        </div>
+        <div class="col-md-2"></div>
         <div class="col-md-8 text-center align-content-center">
             <h2 class="fw-bold mx-auto">Colaboradores</h2>
         </div>
-        <div class="col-md-2 text-center justify-content-center">
-            <p>Conviértete en colaborador</p>
-            <a href="/contacta-con-nosotros" class="shadow rounded-pill btn btn-dark">Contacta con nosotros</a>
-        </div>
     </div>
     <hr class="my-3">
-    <div class="row">
 
+    <!-- Mostrar botones solo si no hay un usuario autenticado -->
+    {% if not user.is_authenticated %}
+        <div class="row mt-3">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 text-center">
+                <p>Conviértete en colaborador</p>
+                <a href="/contacta-con-nosotros" class="shadow rounded-pill btn btn-dark">Contacta con nosotros</a>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+        <hr class="my-3">
+    {% endif %}
+
+    <!-- Listado de Empresas -->
+    <div class="row">
+        <div class="col-md-6">
+            <h3 class="fw-bold text-center">Empresas</h3>
+            <div class="row">
+                {% for empresa in empresas %}
+                    <div class="col-md-6 mb-2">
+                        <div class="card card-custom shadow h-100">
+                            <div class="card-body">
+                                <h3 class="card-title fw-bold">{{ empresa.nombre }}</h3>
+                                <p class="card-text">{{ empresa.descripcion }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-center">No hay empresas registradas.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+       
     </div>
 </div>
-
 {% endblock %}
