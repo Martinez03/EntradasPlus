@@ -235,9 +235,9 @@ def crear_evento(request):
 
 @login_required
 def crear_grupo(request):
-    # Verificar si el usuario ya tiene un grupo creado
-    if Grupo.objects.filter(admin=request.user).exists():
-        messages.warning(request, 'Solo puedes crear un grupo.')
+    # Limitar a 3 grupos por usuario
+    if Grupo.objects.filter(admin=request.user).count() >= 3:
+        messages.warning(request, 'Has alcanzado el límite de 3 grupos. Para crear uno nuevo, debes eliminar alguno existente.')
         return redirect('lista_grupos')
 
     if request.method == 'POST':
@@ -251,7 +251,6 @@ def crear_grupo(request):
     else:
         form = GrupoForm()
     return render(request, 'crear_grupo.html', {'form': form})
-
 
 def lista_grupos(request):
     grupos = Grupo.objects.all()
@@ -311,28 +310,38 @@ def solicitar_union_grupo(request, grupo_id):
 def gestionar_grupo(request, grupo_id):
     grupo = get_object_or_404(Grupo, pk=grupo_id)
 
-    # Verificar si el usuario es el administrador del grupo
+    # Verificar que el usuario es el administrador del grupo
     if request.user != grupo.admin:
+        messages.error(request, 'No tienes permiso para administrar este grupo.')
         return redirect('detalles_grupo', grupo_id=grupo.id)
 
     solicitudes = SolicitudGrupo.objects.filter(grupo=grupo)
 
     if request.method == 'POST':
         accion = request.POST.get('accion')
-        solicitud_id = request.POST.get('solicitud_id')
-        solicitud = get_object_or_404(SolicitudGrupo, id=solicitud_id)
+        usuario_id = request.POST.get('usuario_id')
 
-        if accion == 'aceptar':
-            grupo.usuarios.add(solicitud.usuario)
-            solicitud.delete()
-            messages.success(request, f"{solicitud.usuario.username} ha sido añadido al grupo.")
-        elif accion == 'rechazar':
-            solicitud.delete()
-            messages.info(request, f"Has rechazado la solicitud de {solicitud.usuario.username}.")
+        # Manejar la aceptación/rechazo de solicitudes
+        if usuario_id:
+            solicitud = get_object_or_404(SolicitudGrupo, id=usuario_id)
+            if accion == 'aceptar':
+                grupo.usuarios.add(solicitud.usuario)
+                solicitud.delete()
+                messages.success(request, f"{solicitud.usuario.username} ha sido añadido al grupo.")
+            elif accion == 'rechazar':
+                solicitud.delete()
+                messages.info(request, f"Has rechazado la solicitud de {solicitud.usuario.username}.")
+        
+        # Manejar la expulsión de usuarios
+        elif accion == 'expulsar':
+            usuario = get_object_or_404(User, id=usuario_id)
+            grupo.usuarios.remove(usuario)
+            messages.info(request, f"{usuario.username} ha sido expulsado del grupo.")
 
     return render(request, 'gestionar_grupo.html', {
         'grupo': grupo,
         'solicitudes': solicitudes,
+        'usuarios': grupo.usuarios.all(),
     })
 
 @login_required
@@ -347,3 +356,19 @@ def eliminar_mensaje_grupo(request, mensaje_id):
         messages.error(request, 'No tienes permiso para eliminar este mensaje.')
     
     return redirect('detalles_grupo', grupo_id=mensaje.grupo.id)
+
+@login_required
+def eliminar_grupo(request, grupo_id):
+    grupo = get_object_or_404(Grupo, id=grupo_id)
+
+    # Verificar que el usuario es el administrador
+    if request.user != grupo.admin:
+        messages.error(request, 'No tienes permiso para eliminar este grupo.')
+        return redirect('detalles_grupo', grupo_id=grupo.id)
+
+    if request.method == 'POST':
+        grupo.delete()
+        messages.success(request, 'El grupo ha sido eliminado.')
+        return redirect('lista_grupos')
+
+    return render(request, 'confirmar_eliminar_grupo.html', {'grupo': grupo})

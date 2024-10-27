@@ -31,6 +31,7 @@ urlpatterns = [
     path('grupos/<int:grupo_id>/solicitar_union/', views.solicitar_union_grupo, name='solicitar_union_grupo'),
     path('grupos/<int:grupo_id>/gestionar/', views.gestionar_grupo, name='gestionar_grupo'),
     path('grupos/mensajes/<int:mensaje_id>/eliminar/', views.eliminar_mensaje_grupo, name='eliminar_mensaje_grupo'),
+    path('grupos/<int:grupo_id>/eliminar/', views.eliminar_grupo, name='eliminar_grupo'),
 ]
 
 if settings.DEBUG:

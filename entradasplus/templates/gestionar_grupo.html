@@ -11,13 +11,30 @@
             <span>{{ solicitud.usuario.username }} quiere unirse</span>
             <form method="POST">
                 {% csrf_token %}
-                <input type="hidden" name="solicitud_id" value="{{ solicitud.id }}">
+                <input type="hidden" name="usuario_id" value="{{ solicitud.id }}">
                 <button name="accion" value="aceptar" class="btn btn-success">Aceptar</button>
                 <button name="accion" value="rechazar" class="btn btn-danger">Rechazar</button>
             </form>
         </div>
     {% empty %}
         <p>No hay solicitudes pendientes.</p>
+    {% endfor %}
+
+    <hr>
+
+    <!-- Lista de usuarios en el grupo -->
+    <h3>Usuarios en el Grupo</h3>
+    {% for usuario in usuarios %}
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span>{{ usuario.username }}</span>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="usuario_id" value="{{ usuario.id }}">
+                <button name="accion" value="expulsar" class="btn btn-danger">Expulsar</button>
+            </form>
+        </div>
+    {% empty %}
+        <p>No hay usuarios en este grupo.</p>
     {% endfor %}
 </div>
 {% endblock %}
