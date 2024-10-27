@@ -64,15 +64,20 @@ class Reseña(models.Model):
     calificacion = models.IntegerField()  # Rango de 1 a 5, por ejemplo
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
+
 class PerfilUsuario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=30, blank=True)  # Nombre del usuario
+    apellidos = models.CharField(max_length=50, blank=True)  # Apellidos del usuario
     avatar = models.ImageField(upload_to='avatars/', default='people.png', null=True, blank=True)
     dinero = models.IntegerField(default=0)
+    descripcion = models.TextField(blank=True)  # Campo descripción añadido
     eventos_con_like = models.ManyToManyField('Evento', related_name='usuarios_con_like', blank=True)
 
     def __str__(self):
         return f"{self.user.username} Profile"
-    
+
+
 class Mensaje(models.Model):
     evento = models.ForeignKey(Evento, on_delete=models.CASCADE, related_name='mensajes')
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)

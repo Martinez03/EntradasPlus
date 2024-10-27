@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from . import models
-from .models import Empresa, Evento, Mensaje
+from .models import Empresa, Evento, Mensaje,Entrada
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from datetime import datetime
@@ -102,46 +102,10 @@ def login_view(request):
     else:
         return render(request, 'index.html')
 
-def detalles_evento(request, evento_id):
-    # Importamos el modelo Evento si no está importado
-    evento = get_object_or_404(models.Evento, pk=evento_id)  # Usa models.Evento
-    return render(request, 'detalles_evento.html', {'evento': evento})
 
 def logout_view(request):
     logout(request)
     return redirect('home')  # Redirige a la página principal después de cerrar sesión
-
-def crear_evento(request):
-    if request.method == 'POST':
-        form = EventoForm(request.POST)
-        if form.is_valid():
-            evento = form.save(commit=False)
-            evento.empresa = request.user.empresa  # Asignar la empresa organizadora
-            evento.save()
-            return redirect('home')  # Redirigir tras crear el evento
-    else:
-        form = EventoForm()
-    return render(request, 'crear_evento.html', {'form': form})
-
-def editar_evento(request, evento_id):
-    evento = get_object_or_404(Evento, pk=evento_id, empresa=request.user.empresa)
-    if request.method == 'POST':
-        form = EventoForm(request.POST, instance=evento)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = EventoForm(instance=evento)
-    return render(request, 'editar_evento.html', {'form': form, 'evento': evento})
-
-def eliminar_evento(request, evento_id):
-    evento = get_object_or_404(Evento, pk=evento_id, empresa=request.user.empresa)
-    if request.method == 'POST':
-        evento.delete()
-        return redirect('home')
-    return render(request, 'eliminar_evento.html', {'evento': evento})
-
-
 
 def trending(request):
     eventos = Evento.objects.all()
@@ -197,7 +161,57 @@ def comprar(request, evento_id):
 
     return render(request, 'comprar.html', {'evento': evento , 'entradas': entradas })
 
+@login_required
+def comprar_entrada(request, entrada_id):
+    # Obtener la entrada específica
+    entrada = get_object_or_404(Entrada, id=entrada_id)
+    perfil_usuario = PerfilUsuario.objects.get(user=request.user)
+    
+    # Verificar que haya suficientes entradas disponibles
+    if entrada.cantidad_disponible <= 0:
+        messages.error(request, 'Lo sentimos, no hay entradas disponibles.')
+        return redirect('comprar_evento', evento_id=entrada.evento.id)
 
+    if request.method == 'POST':
+        # Obtener la cantidad de entradas solicitada (por defecto, 1)
+        cantidad = int(request.POST.get('cantidad', 1))
+        total = cantidad * entrada.precio
+        
+        # Mensaje de depuración
+        print(f"Cantidad solicitada: {cantidad}, Total de la compra: {total}, Dinero del usuario: {perfil_usuario.dinero}")
+        
+        # Verificar si hay suficientes entradas para la cantidad deseada
+        if cantidad > entrada.cantidad_disponible:
+            messages.error(request, f'Solo quedan {entrada.cantidad_disponible} entradas disponibles.')
+            return redirect('comprar_evento', evento_id=entrada.evento.id)
+        
+        # Verificar si el usuario tiene suficiente dinero
+        if perfil_usuario.dinero < total:
+            messages.error(request, f'No tienes suficiente dinero para esta compra. Te faltan {total - perfil_usuario.dinero}€.')
+            return redirect('comprar_evento', evento_id=entrada.evento.id)
+        
+        # Crear el pedido
+        pedido = Pedido.objects.create(
+            usuario=request.user,
+            entrada=entrada,
+            cantidad=cantidad,
+            fecha_compra=timezone.now(),
+            total=total
+        )
+        
+        # Actualizar la cantidad disponible de entradas
+        entrada.cantidad_disponible -= cantidad
+        entrada.save()
+        
+        # Descontar el dinero del perfil del usuario
+        perfil_usuario.dinero -= total
+        perfil_usuario.save()
+
+        messages.success(request, '¡Compra realizada con éxito!')
+        return redirect('perfil')
+    
+    return render(request, 'comprar.html', {'entrada': entrada})
+    
 def empresa_pendiente(request):
     return render(request, 'empresa_pendiente.html')
 

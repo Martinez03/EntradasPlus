@@ -1,13 +1,21 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <div class="container mt-5">
     <h2>Perfil de {{ user.username }}</h2>
     <div class="row">
         <div class="col-md-4">
             <h4>Información Personal</h4>
-            <img src="{{ perfil_usuario.avatar.url }}" alt="Avatar" class="img-thumbnail mb-3">
+            {% if perfil_usuario.avatar %}
+                <img src="{{ perfil_usuario.avatar.url }}" alt="Avatar" class="img-thumbnail mb-3">
+            {% else %}
+                <img src="{% static 'people.png' %}" alt="Avatar por defecto" class="img-thumbnail mb-3">
+            {% endif %}
             <p><strong>Email:</strong> {{ user.email }}</p>
-            <p><strong>Descripción:</strong> {{ perfil_usuario.descripcion }}</p>
+            <p><strong>Nombre:</strong> {{ perfil_usuario.nombre}}</p>
+            <p><strong>Apellidos:</strong> {{ perfil_usuario.apellidos }}</p>
+            <p><strong>Descripcion:</strong> {{ perfil_usuario.descripcion}}</p>
+            <p><strong>Dinero Disponible:</strong> {{ perfil_usuario.dinero }}€</p>  
             <a href="{% url 'editar_perfil' %}" class="btn btn-primary">Editar Información</a>
             <a href="{% url 'eliminar_cuenta' %}" class="btn btn-danger mt-2">Eliminar Cuenta</a>
         </div>
@@ -37,4 +45,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock content %}
