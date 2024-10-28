@@ -12,8 +12,9 @@ from django.db.models import Q
 from datetime import datetime
 
 from .models import Entrada, Empresa, Evento, Mensaje, Pedido, Grupo, PerfilUsuario, SolicitudGrupo, MensajeGrupo
-from .forms import EventoForm, EmpresaForm, RegisterForm, MensajeForm, PerfilForm, GrupoForm, MensajeGrupoForm
+from .forms import EventoForm, EmpresaForm, RegisterForm, MensajeForm, PerfilForm, GrupoForm, MensajeGrupoForm, EditarEmpresaForm, EditarEventoForm
 from .decorators import empresa_verificada_required
+from django.contrib.admin.views.decorators import staff_member_required
 
 # ---------------------------------------------------------
 #                  SECCION PÁGINA PRINCIPAL
@@ -110,6 +111,43 @@ def verificar_estado_empresa(user):
 def empresa_pendiente(request):
     return render(request, 'empresa_pendiente.html')
 
+@staff_member_required
+def admin_empresas_pendientes(request):
+    empresas_pendientes = Empresa.objects.filter(estado='pendiente')
+    return render(request, 'admin_empresas_pendientes.html', {'empresas_pendientes': empresas_pendientes})
+
+@staff_member_required
+def verificar_empresa(request, empresa_id):
+    empresa = get_object_or_404(Empresa, id=empresa_id)
+    if request.method == 'POST':
+        empresa.estado = 'verificada'
+        empresa.save()
+        messages.success(request, f'La empresa {empresa.nombre} ha sido verificada.')
+        return redirect('admin_empresas_pendientes')
+    return render(request, 'verificar_empresa.html', {'empresa': empresa})
+
+@empresa_verificada_required
+def editar_empresa(request):
+    empresa = get_object_or_404(Empresa, usuario=request.user)
+    if request.method == 'POST':
+        form = EditarEmpresaForm(request.POST, instance=empresa)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Información de la empresa actualizada exitosamente.')
+            return redirect('mi_empresa')
+    else:
+        form = EditarEmpresaForm(instance=empresa)
+    return render(request, 'editar_empresa.html', {'form': form})
+
+def lista_empresas_verificadas(request):
+    empresas = Empresa.objects.filter(estado='verificada')
+    return render(request, 'colaboradores.html', {'empresas': empresas})
+
+def detalle_empresa(request, empresa_id):
+    empresa = get_object_or_404(Empresa, id=empresa_id, estado='verificada')
+    eventos = Evento.objects.filter(empresa=empresa)
+    return render(request, 'detalle_empresa.html', {'empresa': empresa, 'eventos': eventos})
+
 # ---------------------------------------------------------
 #                  SECCION EVENTOS
 # ---------------------------------------------------------
@@ -125,7 +163,36 @@ def crear_evento(request):
             return redirect('mis_eventos')
     else:
         form = EventoForm()
-    return render(request, 'events/crear_evento.html', {'form': form})
+    return render(request, 'crear_evento.html', {'form': form})
+
+@empresa_verificada_required
+def editar_evento(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id, empresa__usuario=request.user)
+    if request.method == 'POST':
+        form = EditarEventoForm(request.POST, request.FILES, instance=evento)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Evento actualizado exitosamente.')
+            return redirect('mis_eventos')
+    else:
+        form = EditarEventoForm(instance=evento)
+    return render(request, 'events/editar_evento.html', {'form': form, 'evento': evento})
+
+@empresa_verificada_required
+def eliminar_evento(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id, empresa__usuario=request.user)
+    if request.method == 'POST':
+        evento.delete()
+        messages.success(request, 'Evento eliminado exitosamente.')
+        return redirect('mis_eventos')
+    return render(request, 'events/confirmar_eliminar_evento.html', {'evento': evento})
+
+@empresa_verificada_required
+def compradores_evento(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id, empresa__usuario=request.user)
+    pedidos = Pedido.objects.filter(entrada__evento=evento).select_related('usuario')
+    return render(request, 'events/compradores_evento.html', {'evento': evento, 'pedidos': pedidos})
+
 
 def trending(request):
     eventos = Evento.objects.all()
@@ -164,6 +231,13 @@ def comprar_evento(request, evento_id):
         messages.success(request, '¡Compra realizada con éxito!')
         return redirect('home')
     return redirect('comprar', evento_id=evento.id)
+
+@empresa_verificada_required
+def mis_eventos(request):
+    empresa = Empresa.objects.get(usuario=request.user)
+    eventos = Evento.objects.filter(empresa=empresa)
+    return render(request, 'mis_eventos.html', {'eventos': eventos})
+
 
 # ---------------------------------------------------------
 #                  SECCION CHAT DE EVENTOS

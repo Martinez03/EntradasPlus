@@ -16,6 +16,11 @@ class EventoForm(forms.ModelForm):
         model = Evento
         fields = ['nombre', 'descripcion', 'fecha_evento', 'lugar', 'capacidad']
 
+class EditarEventoForm(forms.ModelForm):
+    class Meta:
+        model = Evento
+        fields = ['nombre', 'descripcion', 'fecha_evento', 'lugar', 'capacidad', 'imagen']
+
 # ---------------------------------------------------------
 #                  SECCION FORMULARIO DE EMPRESA
 # ---------------------------------------------------------
@@ -40,6 +45,11 @@ class EmpresaForm(forms.ModelForm):
         if commit:
             empresa.save()
         return empresa
+
+class EditarEmpresaForm(forms.ModelForm):
+    class Meta:
+        model = Empresa
+        fields = ['nombre', 'descripcion', 'email', 'telefono', 'direccion']
 
 # ---------------------------------------------------------
 #                SECCION FORMULARIO DE REGISTRO

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ empresa.nombre }}</h2>
+    <p><strong>Descripción:</strong> {{ empresa.descripcion }}</p>
+    <p><strong>Email:</strong> {{ empresa.email }}</p>
+    <p><strong>Teléfono:</strong> {{ empresa.telefono }}</p>
+    <p><strong>Dirección:</strong> {{ empresa.direccion }}</p>
+
+    <h3 class="mt-4">Eventos Creados por {{ empresa.nombre }}</h3>
+    <ul class="list-group mt-3">
+        {% for evento in eventos %}
+            <li class="list-group-item">{{ evento.nombre }} - {{ evento.fecha_evento }}</li>
+        {% empty %}
+            <li class="list-group-item">Esta empresa no tiene eventos registrados.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

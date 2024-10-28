@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Compradores de Entradas - {{ evento.nombre }}</h2>
+    <ul class="list-group">
+        {% for pedido in pedidos %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>{{ pedido.usuario.username }} - {{ pedido.cantidad }} entradas</span>
+                <span class="badge bg-primary rounded-pill">Total: {{ pedido.total }}€</span>
+                <small class="text-muted">Fecha de compra: {{ pedido.fecha_compra|date:"d M Y H:i" }}</small>
+            </li>
+        {% empty %}
+            <li class="list-group-item">No hay compradores para este evento.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

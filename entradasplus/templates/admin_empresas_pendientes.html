@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2>Empresas Pendientes de Verificación</h2>
+    <ul class="list-group">
+        {% for empresa in empresas_pendientes %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ empresa.nombre }}
+                <a href="{% url 'verificar_empresa' empresa.id %}" class="btn btn-sm btn-success">Verificar</a>
+            </li>
+        {% empty %}
+            <li class="list-group-item">No hay empresas pendientes de verificación.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

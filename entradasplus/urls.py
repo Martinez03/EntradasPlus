@@ -32,19 +32,28 @@ urlpatterns = [
     # -----------------------------------------------------
     path("register/", views.register, name="register"),
     path('contacta-con-nosotros/', views.contactar_empresa, name='contactar_empresa'),
-    path('empresa/pendiente/', views.empresa_pendiente),
 
     # -----------------------------------------------------
     #                     SECCION EMPRESA
     # -----------------------------------------------------
-    path('mi_empresa/', views.miEmpresa),
-
+    path('mi_empresa/', views.miEmpresa, name='mi_empresa'),
+    path('gestionar_empresas/pendientes/', views.admin_empresas_pendientes, name='admin_empresas_pendientes'),
+    path('gestionar_empresas/<int:empresa_id>/verificar/', views.verificar_empresa, name='verificar_empresa'),
+    path('empresa/editar/', views.editar_empresa, name='editar_empresa'),
+    path('empresa/pendiente/', views.empresa_pendiente, name='empresa_pendiente'),
+    path('colaboradores/', views.lista_empresas_verificadas, name='colaboradores'),
+    path('colaboradores/<int:empresa_id>/', views.detalle_empresa, name='detalle_empresa'),
     # -----------------------------------------------------
     #                     SECCION EVENTOS
     # -----------------------------------------------------
     path('comprar/<int:evento_id>/', views.comprar, name='comprar'),  # Selección de entradas
     path('comprar_evento/<int:evento_id>/', views.comprar_evento, name='comprar_evento'),  # Confirmación de compra
     path('evento/<int:evento_id>/chat/', views.chat_evento, name='chat_evento'),
+    path('eventos/crear/', views.crear_evento, name='crear_evento'),
+    path('eventos/<int:evento_id>/editar/', views.editar_evento, name='editar_evento'),
+    path('eventos/<int:evento_id>/eliminar/', views.eliminar_evento, name='eliminar_evento'),
+    path('eventos/<int:evento_id>/compradores/', views.compradores_evento, name='compradores_evento'),
+    path('eventos/mis_eventos/', views.mis_eventos, name='mis_eventos'),
 
     # -----------------------------------------------------
     #                      SECCION GRUPOS

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Verificar Empresa</h2>
+    <p><strong>Nombre:</strong> {{ empresa.nombre }}</p>
+    <p><strong>Descripción:</strong> {{ empresa.descripcion }}</p>
+    <p><strong>Email:</strong> {{ empresa.email }}</p>
+    <p><strong>Teléfono:</strong> {{ empresa.telefono }}</p>
+    <p><strong>Dirección:</strong> {{ empresa.direccion }}</p>
+    
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Verificar Empresa</button>
+        <a href="{% url 'admin_empresas_pendientes' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Mis Eventos</h1>
+
+    <!-- Botón para crear un nuevo evento -->
+    <a href="{% url 'crear_evento' %}" class="btn btn-success mb-4">Crear Nuevo Evento</a>
+
+    <ul class="list-group">
+        {% for evento in eventos %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>{{ evento.nombre }} - {{ evento.fecha_evento|date:"d M Y H:i" }}</span>
+                <span>
+                    <a href="{% url 'editar_evento' evento.id %}" class="btn btn-sm btn-primary">Editar</a>
+                    <a href="{% url 'eliminar_evento' evento.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    <a href="{% url 'compradores_evento' evento.id %}" class="btn btn-sm btn-info">Ver Compradores</a>
+                </span>
+            </li>
+        {% empty %}
+            <li class="list-group-item">No tienes eventos creados.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

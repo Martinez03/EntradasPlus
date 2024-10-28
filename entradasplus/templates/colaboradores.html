@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-
 <div class="container-fluid">
     <!-- Título común para todos los usuarios -->
     <div class="row mt-3">
@@ -35,7 +33,11 @@
                     <div class="col-md-6 mb-2">
                         <div class="card card-custom shadow h-100">
                             <div class="card-body">
-                                <h3 class="card-title fw-bold">{{ empresa.nombre }}</h3>
+                                <h3 class="card-title fw-bold">
+                                    <a href="{% url 'detalle_empresa' empresa.id %}" class="text-dark">
+                                        {{ empresa.nombre }}
+                                    </a>
+                                </h3>
                                 <p class="card-text">{{ empresa.descripcion }}</p>
                             </div>
                         </div>
@@ -45,8 +47,6 @@
                 {% endfor %}
             </div>
         </div>
-
-       
     </div>
 </div>
 {% endblock %}

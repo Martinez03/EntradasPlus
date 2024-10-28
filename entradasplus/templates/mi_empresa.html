@@ -1,8 +1,21 @@
 {% extends "base.html" %}
+
 {% block content %}
+<div class="container">
+    <h1>Información de Mi Empresa</h1>
+    <p><strong>Nombre:</strong> {{ empresa.nombre }}</p>
+    <p><strong>Descripción:</strong> {{ empresa.descripcion }}</p>
+    <p><strong>Email:</strong> {{ empresa.email }}</p>
+    <p><strong>Teléfono:</strong> {{ empresa.telefono }}</p>
+    <p><strong>Dirección:</strong> {{ empresa.direccion }}</p>
 
-{% if empresa and empresa.estado == 'pendiente' %}
-    <p>Tu empresa está pendiente de verificación.</p>
-{% endif %}
+    {% if empresa.estado == 'pendiente' %}
+        <p class="text-warning">Estado: Pendiente de verificación</p>
+    {% else %}
+        <p class="text-success">Estado: Verificado</p>
+    {% endif %}
 
+    <!-- Botón para editar la información de la empresa -->
+    <a href="{% url 'editar_empresa' %}" class="btn btn-primary mt-3">Editar Empresa</a>
+</div>
 {% endblock %}
