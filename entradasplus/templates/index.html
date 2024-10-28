@@ -26,29 +26,47 @@
             {% endfor %}
         </div>
     {% endif %}
-    <div class="row">
+    <div class="row mt-5">
         <h1 class="fw-bold text-white mt-5"> Descubre los mejores eventos</h1>
     </div>
-
-
-
-
+    <div class="container justify-content-center mt-5">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-3 mx-2 shadow border rounded text-white text-center">
+                <i class="fas fa-compass fa-2x mt-3"></i>
+                <h2 class="fw-bold mt-2">Descubre</h2>
+                <hr>
+                <p>
+                    Explora una amplia selección de eventos, desde conciertos hasta exposiciones de arte, ferias gastronómicas y más. Con nuestra plataforma, siempre hay algo nuevo por descubrir en tu ciudad y alrededores.
+                </p>
+            </div>
+            <div class="col-md-3 mx-2 shadow border rounded text-white text-center">
+                <i class="fas fa-star fa-2x mt-3"></i>
+                <h2 class="fw-bold mt-2">Inspírate</h2>
+                <hr>
+                <p>
+                    Sumérgete en experiencias únicas y encuentra eventos que despierten tu curiosidad y creatividad. Te ayudamos a vivir momentos inolvidables, rodeado de gente apasionada por el arte, la música, el deporte y mucho más.
+                </p>
+            </div>
+            <div class="col-md-3 mx-2 shadow border rounded text-white text-center">
+                <i class="fas fa-users fa-2x mt-3"></i>
+                <h2 class="fw-bold mt-2">Conéctate</h2>
+                <hr>
+                <p>
+                    Únete a una comunidad que comparte tus intereses. Conéctate con personas que buscan disfrutar de eventos y hacer nuevas amistades. Comparte experiencias y crea recuerdos junto a otros amantes de la cultura y el entretenimiento.
+                </p>
+            </div>            
+        </div>  
+        <div class="row mt-5">
+            <div class="text-center my-4">
+                <a href="/trending" class="btn btn-light rounded-pill btn-lg px-4 py-2 shadow fw-light fs-4">
+                    <i class="fas text-secondary fa-search mr-2"></i> Explora y Vive Nuevas Experiencias
+                </a>
+            </div>
+        </div>      
+    </div>
 </div>
 
-<!-- <div class="row">
-    {% for entrada in entradas %}
-    <div class="col-md-4">
-        <div class="card mb-4 shadow-sm">
-            <img src="{{ entrada.evento.imagen_url }}" class="card-img-top" alt="{{ entrada.evento.nombre }}">
-            <div class="card-body">
-                <h5 class="card-title">{{ entrada.evento.nombre }}</h5>
-                <p class="card-text">{{ entrada.evento.descripcion|truncatewords:20 }}</p>
-                <a href="{% url 'detalles_evento' entrada.evento.id %}" class="btn btn-primary">Ver Evento</a>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-</div> -->
+
 
 {% endblock %}
 
