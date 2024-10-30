@@ -4,12 +4,11 @@
 <div class="container">
     <div class="row justify-content-center mt-3 align-items-center">
         <div class="col-md-6 col-lg-4">
-            <div class="input-group">
-                <input class="form-control rounded-pill py-3 shadow" type="search" placeholder="Buscar..."
-                    id="example-search-input1">
-                <span class="input-group-text bg-transparent border-0 position-absolute end-0 me-3">
-                    <i class="fa fa-search mt-3 ml-1"></i>
-                </span>
+            <div class="input-group mb-3 mt-3 col-md-5">
+                <form method="GET" action="{% url 'lista_grupos' %}" class="d-flex w-100">
+                    <input type="text" name="q" class="form-control rounded-pill py-3 shadow me-2" placeholder="Buscar grupos...">
+                    <button class="btn btn-primary search-button" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>                
             </div>
         </div>
     </div>

@@ -3,29 +3,34 @@
 {% block content %}
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mt-3">
-        <h2 class="text-center">Grupos</h2>
-        <a href="{% url 'crear_grupo' %}" class="btn btn-grad">Crear Grupo</a>
+        <div class="col-md-2">
+            <h2 class="text-center fw-bold">Grupos</h2>
+        </div>
+        <div class="col-md-5">
+            <div class="input-group mb-3 mt-3 col-md-5">
+                <form method="GET" action="{% url 'lista_grupos' %}" class="d-flex w-100">
+                    <input type="text" name="q" class="form-control rounded-pill py-3 shadow me-2" placeholder="Buscar grupos...">
+                    <button class="btn btn-primary search-button" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>                
+            </div>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'crear_grupo' %}" class="btn btn-grad">Crear Grupo</a>
+        </div>
     </div>
 
-    <!-- Barra de búsqueda -->
-    <div class="input-group mb-3 mt-3">
-        <form method="GET" action="{% url 'lista_grupos' %}" class="w-100">
-            <input type="text" name="q" class="form-control" placeholder="Buscar grupos...">
-            <button class="btn btn-primary" type="submit">Buscar</button>
-        </form>
-    </div>
-
-    <!-- Listado de Grupos -->
+    <hr>
     <div class="row">
         {% for grupo in grupos %}
         <div class="col-md-4 mb-3">
-            <div class="card card-custom shadow">
+            <a class="card text-center h-100 card-grupo" style=" border-radius:70px;" href="{% url 'detalles_grupo' grupo.id %}">
+                <img src="{{ grupo.foto.url }}" class="img-fluid img-local card-img-top " style="object-fit: cover; height: 310px; width: 100%; border-radius: 70px 70px 0 0;">
                 <div class="card-body">
                     <h5 class="card-title">{{ grupo.nombre }}</h5>
                     <p class="card-text">{{ grupo.descripcion|truncatewords:20 }}</p>
-                    <a href="{% url 'detalles_grupo' grupo.id %}" class="btn btn-grad">Ver Grupo</a>
+                    <!-- <a href="{% url 'detalles_grupo' grupo.id %}" class="btn btn-grad">Ver Grupo</a> -->
                 </div>
-            </div>
+            </a>
         </div>
         {% empty %}
         <p>No se encontraron grupos.</p>

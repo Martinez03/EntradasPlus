@@ -117,7 +117,7 @@ class Grupo(models.Model):
     tipo = models.CharField(max_length=10, choices=TIPO_GRUPO_CHOICES, default='publico')
     admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name='grupos_admin')
     usuarios = models.ManyToManyField(User, related_name='grupos', blank=True)
-    foto = models.ImageField(upload_to='grupos/', blank=True, null=True)
+    foto = models.ImageField(upload_to='grupos/', default='grupos/default.webp', blank=True, null=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

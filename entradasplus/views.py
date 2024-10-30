@@ -37,7 +37,8 @@ def calendar(request):
     return render(request, 'calendar.html', {})
 
 def colaboradores(request):
-    return render(request, 'colaboradores.html')
+    empresas = Empresa.objects.filter(estado='verificada')
+    return render(request, 'colaboradores.html',{'empresas': empresas})
 
 # ---------------------------------------------------------
 #            SECCION INICIO Y CIERRE DE SESIÓN
