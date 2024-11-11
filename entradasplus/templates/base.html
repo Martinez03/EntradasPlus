@@ -3,272 +3,276 @@
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navbar Centrado y Aumentado</title>
+    <title>EntradasPlus</title>
     {% load static %}
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css"
+        rel="stylesheet">
     <!-- Estilos personalizados -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 </head>
+
 <body>
-
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background: linear-gradient(to right, #cbcee3, #dcb7d6);">
-    <div class="container-fluid justify-content-center">
-      <!-- Logo o nombre de la marca con icono -->
-        <div class="col-md-2">
-            <a class="navbar-brand text-white fw-bold" href="/">
-                <i class="bi bi-ticket-detailed"></i> EntradasPlus
-            </a>    
-        <!-- Botón de hamburguesa para colapsar el menú en pantallas pequeñas -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"  aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </div>
-        <div class="col-md-8 justify-content-center text-center">
-            <!-- Enlaces del menú, centrados -->
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                <ul class="navbar-nav">
-                {% if user_empresa %}
-                <li class="nav-item mx-2">
-                    <a class="nav-link active text-white" aria-current="page" href="/">
-                        <i class="fa-solid fa-house"></i> Inicio
-                    </a>
-                </li>
-                <li class="nav-item mx-2">
-                    <a class="nav-link text-white" href="{% url 'mi_empresa' %}">
-                        <i class="fa-solid fa-building"></i> Mi Empresa
-                    </a>
-                </li>
-                <li class="nav-item mx-2">
-                    <a class="nav-link text-white" href="{% url 'mis_eventos' %}">
-                        <i class="fa-solid fa-calendar-check"></i> Mis Eventos
-                    </a>
-                </li>
-                {% else %}
-                <li class="nav-item mx-2">
-                    <a class="nav-link active text-white" aria-current="page" href="/">
-                    <i class="fa-solid fa-house"></i> Inicio
-                    </a>
-                </li>
-                <li class="nav-item mx-2">
-                    <a class="nav-link text-white" href="/trending">
-                    <i class="fa-solid fa-fire"></i> Trending
-                    </a>
-                </li>
-                <li class="nav-item mx-2">
-                    <a class="nav-link text-white" href="{% url 'lista_grupos' %}">
-                        <i class="fa-solid fa-users"></i> Grupos
-                    </a>
-                </li>                
-                <li class="nav-item mx-2">
-                    <a class="nav-link text-white" href="/calendar">
-                    <i class="fa-solid fa-calendar"></i> Calendario
-                    </a>
-                </li>
-                <li class="nav-item mx-2">
-                    <a class="nav-link text-white" href="/colaboradores">
-                    <i class="fa-solid fa-users"></i> Colaboradores
-                    </a>
-                </li>
-                {% if user.is_authenticated and user.is_staff %}
-                <li class="nav-item mx-2">
-                    <a class="nav-link text-white" href="{% url 'admin_empresas_pendientes' %}">
-                        <i class="fa-solid fa-check-circle"></i> Administración
-                    </a>
-                </li>
-                {% endif %}
-                {% endif %}
-                </ul>
-            </div>
-        </div>
-        <div class="col-md-2 d-flex justify-content-end">
-            <!-- Verificar si el usuario está autenticado -->
-            {% if user.is_authenticated %}
-            <!-- Si un usuario está autenticado, mostrar "Cerrar sesión" para usuario -->
-            <div class="dropdown">
-                <!-- Imagen del avatar que actúa como botón para desplegar el menú -->
-                {% if user.perfilusuario.avatar %}
-                    <img src="{{ user.perfilusuario.avatar.url }}" 
-                        class="rounded-circle shadow dropdown-toggle" 
-                        style="width: 50px; cursor: pointer;" 
-                        alt="Avatar" 
-                        id="avatarDropdown" 
-                        data-bs-toggle="dropdown" 
-                        aria-expanded="false">
-                {% else %}
-                    <img src="{% static 'people.png' %}" 
-                        class="rounded-circle shadow dropdown-toggle" 
-                        style="width: 50px; cursor: pointer;" 
-                        alt="Avatar" 
-                        id="avatarDropdown" 
-                        data-bs-toggle="dropdown" 
-                        aria-expanded="false">
-                {% endif %}
-                     
-                <!-- Menú desplegable -->
-                <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="avatarDropdown">
-                    <li>
-                        <a class="dropdown-item" href="{% url 'perfil' %}">Perfil</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a>
-                    </li>
-                </ul>
-
-            </div>
-            {% elif request.session.empresa_id %}
-            <!-- Si una empresa está autenticada, mostrar "Cerrar sesión" para empresa -->
-            <a href="{% url 'logout_empresa' %}" class="btn btn-grad-logout btn-login shadow">
-                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
-            </a>
-            {% else %}
-            <!-- Si nadie está autenticado, mostrar ambos botones de inicio de sesión -->
-            <button class="btn btn-grad btn-login shadow me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
-                <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
-            </button>
-            {% endif %}
-        </div>
-    </div>
-</nav>
-  
-
-<!-- Modal de Inicio de Sesión -->
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title" id="loginModalLabel">Regístrate o Inicia Sesión</h2>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="POST" action="{% url 'login' %}">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <h5 for="username" class="form-label large-label">Usuario</h5>
-                        <input type="text" class="form-control" id="username" name="username" required>
-                    </div>
-                    <div class="mb-3">
-                        <h5 for="password" class="form-label large-label">Contraseña</h5>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-                    <!-- Checkbox de "Recuérdame" -->
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="rememberMe">
-                        <label class="form-check-label" for="rememberMe">Recuérdame</label>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100 shadow">Iniciar Sesión</button>
-                </form>
-                <!-- Botón de inicio de sesión con Google -->
-                <a href="{% provider_login_url 'google' %}" class="btn btn-outline-danger rounded shadow w-100 mt-3">
-                    <i class="fab fa-google"></i> Iniciar sesión con Google
-                </a>                
-  
-                <!-- Botón de Registrarse que abre el modal de registro -->
-                <a href="#" class="btn btn-outline-secondary rounded shadow w-100 mt-3" data-bs-toggle="modal" data-bs-target="#registerModal">
-                    Registrarse
+    <main>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light"
+        style="background: linear-gradient(to right, #cbcee3, #dcb7d6);">
+        <div class="container-fluid justify-content-center">
+            <!-- Logo o nombre de la marca con icono -->
+            <div class="col-md-2">
+                <a class="navbar-brand text-white fw-bold" href="/">
+                    <i class="bi bi-ticket-detailed"></i> EntradasPlus
                 </a>
             </div>
+            <div class="col-md-8 justify-content-center text-center">
+                <!-- Enlaces del menú, centrados -->
+                <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                    <ul class="navbar-nav">
+                        {% if user_empresa %}
+                        <li class="nav-item mx-2">
+                            <a class="nav-link active text-white" aria-current="page" href="/">
+                                <i class="fa-solid fa-house"></i> Inicio
+                            </a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-white" href="/mi_empresa">
+                                <i class="fa-solid fa-building"></i> Mi Empresa
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item mx-2">
+                            <a class="nav-link active text-white" aria-current="page" href="/">
+                                <i class="fa-solid fa-house"></i> Inicio
+                            </a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-white" href="/trending">
+                                <i class="fa-solid fa-fire"></i> Trending
+                            </a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-white" href="{% url 'lista_grupos' %}">
+                                <i class="fa-solid fa-users"></i> Grupos
+                            </a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-white" href="/calendar">
+                                <i class="fa-solid fa-calendar"></i> Calendario
+                            </a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-white" href="/colaboradores">
+                                <i class="fa-solid fa-users"></i> Colaboradores
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            {% if messages %}
+            <div id="alert" class="alert alert-danger mt-3 position-absolute top-0 start-50 translate-middle-x"
+                style="z-index: 1050; width: auto;">
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+            </div>
+
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script>
+                $(document).ready(function () {
+                    // Configurar el tiempo en milisegundos (3000 ms = 3 segundos)
+                    setTimeout(function () {
+                        $('#alert').fadeOut();  // Usamos fadeOut para un efecto suave
+                    }, 3000);
+                });
+            </script>
+            {% endif %}
+            <div class="col-md-2 d-flex justify-content-end">
+                <!-- Verificar si el usuario está autenticado -->
+                {% if user.is_authenticated %}
+                <!-- Si un usuario está autenticado, mostrar "Cerrar sesión" para usuario -->
+                <div class="dropdown">
+                    <!-- Imagen del avatar que actúa como botón para desplegar el menú -->
+                    {% if user.perfilusuario.avatar %}
+                    <img src="{{ user.perfilusuario.avatar.url }}" class="rounded-circle shadow dropdown-toggle"
+                        style="width: 50px; cursor: pointer;" alt="Avatar" id="avatarDropdown" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    {% else %}
+                    <img src="{% static 'people.png' %}" class="rounded-circle shadow dropdown-toggle"
+                        style="width: 50px; cursor: pointer;" alt="Avatar" id="avatarDropdown" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    {% endif %}
+
+                    <!-- Menú desplegable -->
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="avatarDropdown">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'perfil' %}">Perfil</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a>
+                        </li>
+                    </ul>
+
+                </div>
+                {% elif request.session.empresa_id %}
+                <!-- Si una empresa está autenticada, mostrar "Cerrar sesión" para empresa -->
+                <a href="{% url 'logout_empresa' %}" class="btn btn-grad-logout btn-login shadow">
+                    <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                </a>
+                {% else %}
+                <!-- Si nadie está autenticado, mostrar ambos botones de inicio de sesión -->
+                <button class="btn btn-grad btn-login shadow me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+                    <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Modal de Inicio de Sesión -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="loginModalLabel">Regístrate o Inicia Sesión</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url 'login' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <h5 for="username" class="form-label large-label">Usuario</h5>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <h5 for="password" class="form-label large-label">Contraseña</h5>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <!-- Checkbox de "Recuérdame" -->
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Recuérdame</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 shadow">Iniciar Sesión</button>
+                    </form>
+                    <!-- Botón de inicio de sesión con Google -->
+                    <a href="{% provider_login_url 'google' %}"
+                        class="btn btn-outline-danger rounded shadow w-100 mt-3">
+                        <i class="fab fa-google"></i> Iniciar sesión con Google
+                    </a>
+
+                    <!-- Botón de Registrarse que abre el modal de registro -->
+                    <a href="#" class="btn btn-outline-secondary rounded shadow w-100 mt-3" data-bs-toggle="modal"
+                        data-bs-target="#registerModal">
+                        Registrarse
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
-  </div>
-  
-  <!-- Modal de Registro -->
-  <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h2 class="modal-title" id="registerModalLabel">Crear una Cuenta</h2>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                  <form method="POST" action="{% url 'register' %}" class="form-group">
-                      {% csrf_token %}
-                      <div class="mb-3">
-                          <label for="id_username" class="form-label">Usuario</label>
-                          <input type="text" name="username" class="form-control" id="id_username">
-                      </div>
-                      <div class="mb-3">
-                          <label for="id_email" class="form-label">Correo Electrónico</label>
-                          <input type="email" name="email" class="form-control" id="id_email">
-                      </div>
-                      <div class="mb-3">
-                          <label for="id_password1" class="form-label">Contraseña(Debe ser una contraseña segura)</label>
-                          <input type="password" name="password1" class="form-control" id="id_password1">
-                      </div>
-                      <div class="mb-3">
-                          <label for="id_password2" class="form-label">Confirmar Contraseña</label>
-                          <input type="password" name="password2" class="form-control" id="id_password2">
-                      </div>
-                      <button type="submit" class="btn btn-success w-100">Registrarse</button>
-                  </form>
-  
+
+    <!-- Modal de Registro -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="registerModalLabel">Crear una Cuenta</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url 'register' %}" class="form-group">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label">Usuario</label>
+                            <input type="text" name="username" class="form-control" id="id_username">
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Correo Electrónico</label>
+                            <input type="email" name="email" class="form-control" id="id_email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_password1" class="form-label">Contraseña(Debe ser una contraseña
+                                segura)</label>
+                            <input type="password" name="password1" class="form-control" id="id_password1">
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_password2" class="form-label">Confirmar Contraseña</label>
+                            <input type="password" name="password2" class="form-control" id="id_password2">
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Registrarse</button>
+                    </form>
+
                     <!-- Botón de Registro con Google -->
-                    <a href="{% provider_login_url 'google' %}" class="btn btn-outline-danger rounded shadow w-100 mt-3">
+                    <a href="{% provider_login_url 'google' %}"
+                        class="btn btn-outline-danger rounded shadow w-100 mt-3">
                         <i class="fab fa-google"></i> Registrarse con Google
-                    </a>                
-              </div>
-          </div>
-      </div>
-  </div>  
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
-<!-- Modal de Inicio de Sesión para Empresa -->
-<div class="modal fade" id="loginEmpresaModal" tabindex="-1" aria-labelledby="loginEmpresaModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h2 class="modal-title" id="loginEmpresaModalLabel">Inicia Sesión como Empresa</h2>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-              <form method="POST" action="{% url 'login_empresa' %}">
-                  {% csrf_token %}
-                  <div class="mb-3">
-                      <h5 for="email" class="form-label">Correo Electrónico</h5>
-                      <input type="email" class="form-control" id="email" name="email" required>
-                  </div>
-                  <div class="mb-3">
-                      <h5 for="password" class="form-label">Contraseña</h5>
-                      <input type="password" class="form-control" id="password" name="password" required>
-                  </div>
-                  <!-- Checkbox de "Recuérdame" -->
-                  <div class="mb-3 form-check">
-                      <input type="checkbox" class="form-check-input" id="rememberEmpresaMe">
-                      <label class="form-check-label" for="rememberEmpresaMe">Recuérdame</label>
-                  </div>
-                  <button type="submit" class="btn btn-primary w-100 shadow">Iniciar Sesión</button>
-                  <!-- Botón de Registrarse como Empresa -->
-                  <a href="{#} class="btn btn-outline-secondary rounded shadow w-100 mt-3">
-                    Registrarse
-                  </a>
-              </form>
-          </div>
-      </div>
-  </div>
-</div>
+    <!-- Modal de Inicio de Sesión para Empresa -->
+    <div class="modal fade" id="loginEmpresaModal" tabindex="-1" aria-labelledby="loginEmpresaModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="loginEmpresaModalLabel">Inicia Sesión como Empresa</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url 'login_empresa' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <h5 for="email" class="form-label">Correo Electrónico</h5>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <h5 for="password" class="form-label">Contraseña</h5>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <!-- Checkbox de "Recuérdame" -->
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberEmpresaMe">
+                            <label class="form-check-label" for="rememberEmpresaMe">Recuérdame</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 shadow">Iniciar Sesión</button>
+                        <!-- Botón de Registrarse como Empresa -->
+                        <a href="{#}" class="btn btn-outline-secondary rounded shadow w-100 mt-3">
+                            Registrarse
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% block content %}
+    {% endblock %}
+</main>
+    <footer class="text-center border-top">
 
-{% block content %}
-{% endblock %}
-<footer class="text-center">
-    <ul class="nav justify-content-center border-bottom pb-3 mx-5 text-center mt-5">
-        <li><a href="#" class="text-decoration-none"><i class="fab fa-facebook-f me-5"></i></a></li>
-        <li><a href="#" class="text-decoration-none"><i class="fab fa-twitter  me-5"></i></a></li>
-        <li><a href="#" class="text-decoration-none"><i class="fab fa-instagram  me-5"></i></a></li>
-        <li><a href="#" class="text-decoration-none"><i class="fab fa-linkedin-in  me-5"></i></a></li>
-    </ul>
-    <p>&copy; 2024 Tu Empresa. Todos los derechos reservados.</p>
-</footer>
+        <ul class="nav justify-content-center border-bottom pb-3 mx-5 text-center mt-5">
+            <li><a href="#" class="text-decoration-none"><i class="fab fa-facebook-f me-5" style="color: #c3b9e3; font-size: 1.5rem;"></i></a></li>
+            <li><a href="#" class="text-decoration-none"><i class="fab fa-twitter  me-5" style="color: #c3b9e3; font-size: 1.5rem;"></i></a></li>
+            <li><a href="#" class="text-decoration-none"><i class="fab fa-instagram  me-5" style="color: #c3b9e3; font-size: 1.5rem;"></i></a></li>
+        </ul>
+        <p>&copy; 2024 EntradasPlus. Todos los derechos reservados.</p>
+    </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 
 </body>
+
 </html>

@@ -230,7 +230,7 @@ def comprar_evento(request, evento_id):
             total=total
         )
         messages.success(request, '¡Compra realizada con éxito!')
-        return redirect('home')
+        return redirect('comprar', evento_id=evento.id)
     return redirect('comprar', evento_id=evento.id)
 
 @empresa_verificada_required

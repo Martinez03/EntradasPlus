@@ -1,39 +1,46 @@
 {% extends "base.html" %}
 {% block content %}
+{% load widget_tweaks %}
 <div class="container mt-5">
-    <h2>Editar Perfil</h2>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
+    <div class="container d-flex justify-content-center">
+        <div class="col-md-6">
+            <h2 class="text-center mt-3 fw-bold">Editar Perfil</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
 
-        <!-- Campos del usuario -->
-        <div class="mb-3">
-            <label for="id_first_name" class="form-label">Nombre</label>
-            {{ form.first_name }}
-        </div>
-        <div class="mb-3">
-            <label for="id_last_name" class="form-label">Apellidos</label>
-            {{ form.last_name }}
-        </div>
-        <div class="mb-3">
-            <label for="id_email" class="form-label">Correo Electrónico</label>
-            {{ form.email }}
-        </div>
+                <div class="form-group mb-3">
+                    <label for="{{ form.nombre.id_for_label }}">Nombre</label>
+                    {{ form.nombre|add_class:"form-control rounded" }}
+                </div>
 
-        <!-- Campos del perfil de usuario -->
-        <div class="mb-3">
-            <label for="id_avatar" class="form-label">Avatar</label>
-            {{ form.avatar }}
-        </div>
-        <div class="mb-3">
-            <label for="id_dinero" class="form-label">Dinero</label>
-            {{ form.dinero }}
-        </div>
-        <div class="mb-3">
-            <label for="id_descripcion" class="form-label">Descripción</label>
-            {{ form.descripcion }}
-        </div>
+                <div class="mb-3">
+                    <label for="id_last_name" class="form-label">Apellidos</label>
+                    {{ form.apellidos|add_class:"form-control rounded" }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_email" class="form-label">Correo Electrónico</label>
+                    {{ form.email|add_class:"form-control rounded" }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_avatar" class="form-label">Avatar</label>
+                    {{ form.avatar|add_class:"form-control rounded" }}
+                </div>
 
-        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-    </form>
+                <div class="mb-3">
+                    <label for="id_dinero" class="form-label">Dinero</label>
+                    {{ form.dinero|add_class:"form-control rounded" }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_descripcion" class="form-label">Descripción</label>
+                    {{ form.descripcion|add_class:"form-control rounded" }}
+                </div>
+
+                <button type="submit" class="btn btn-primary shadow rounded">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}

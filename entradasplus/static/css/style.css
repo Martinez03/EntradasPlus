@@ -1,6 +1,22 @@
 /* style.css */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;800&display=swap");
 
+
+body
+{
+    margin:0;
+    padding:0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main
+{
+flex-grow: 1;
+}
+
+
 /* Aplicar la fuente a todo el documento */
 * {
     font-family: "Poppins", serif;
@@ -214,3 +230,42 @@
     height: 45px;
     outline: 0;
   }
+
+
+
+  .text-end {
+    background-color: #e0f7fa; /* Fondo suave para los mensajes del usuario */
+    border-radius: 10px;
+    padding: 10px;
+    margin-left: auto; /* Alineación a la derecha */
+}
+
+.text-start {
+    background-color: #f1f1f1; /* Fondo más neutro para mensajes de otros */
+    border-radius: 10px;
+    padding: 10px;
+    margin-right: auto; /* Alineación a la izquierda */
+}
+
+
+
+.btn-grad-2 {background-image: linear-gradient(to right, #4776E6 0%, #8E54E9  51%, #4776E6  100%)}
+.btn-grad-2 {
+   margin: 10px;
+   padding: 10px 30px;
+   text-align: center;
+   text-transform: uppercase;
+   transition: 0.5s;
+   background-size: 200% auto;
+   color: white;            
+   box-shadow: 0 0 20px #eee;
+   border-radius: 10px;
+   display: block;
+ }
+
+ .btn-grad-2:hover {
+   background-position: right center; /* change the direction of the change here */
+   color: #fff;
+   text-decoration: none;
+ }
+

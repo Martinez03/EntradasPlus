@@ -2,15 +2,18 @@
 
 {% block content %}
 <div class="container">
-    <h2 class="text-center mt-3">Chat para {{ evento.nombre }}</h2>
+    <h2 class="text-center mt-3 fw-bold">Chat para {{ evento.nombre }}</h2>
 
     <!-- Área de mensajes -->
     <div id="chat-mensajes" class="border p-3 rounded mb-3" style="height: 400px; overflow-y: auto;">
         {% for mensaje in mensajes %}
-            <div class="mb-2">
-                <strong>{{ mensaje.usuario.username }}:</strong>
+        <div class="mb-2 border {% if mensaje.usuario == user %}text-end{% else %}text-start{% endif %}">
+                <strong class="d-block">{{ mensaje.usuario.username }}</strong>
                 <span>{{ mensaje.contenido }}</span>
                 <small class="text-muted">{{ mensaje.fecha_creacion|date:"H:i d/m/Y" }}</small>
+                {% if user == grupo.admin %}
+                    <a href="{% url 'eliminar_mensaje_grupo' mensaje.id %}" class="text-danger">Eliminar</a>
+                {% endif %}
             </div>
         {% empty %}
             <p class="text-muted text-center">No hay mensajes en el chat. ¡Sé el primero en comentar!</p>
@@ -22,7 +25,8 @@
         {% csrf_token %}
         <div class="input-group">
             <textarea name="contenido" class="form-control" rows="2" placeholder="Escribe un mensaje..."></textarea>
-            <button type="submit" class="btn btn-grad ms-2">Enviar</button>
+            <button type="submit" class="btn btn-info text-white
+                        shadow ronded ms-2"><i class="fa-regular fa-paper-plane"></i></button>
         </div>
     </form>
 </div>

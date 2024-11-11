@@ -2,8 +2,7 @@
 
 {% block content %}
 <div class="container">
-    <h2 class="text-center mt-3">{{ grupo.nombre }}</h2>
-
+    <h2 class="text-center mt-3 fw-bold">{{ grupo.nombre }}</h2>
     <div class="row">
         <!-- Columna de Usuarios -->
         <div class="col-md-3">
@@ -12,7 +11,12 @@
                     <h5>Usuarios en el Grupo</h5>
                     <ul class="list-group list-group-flush">
                         {% for usuario in grupo.usuarios.all %}
-                            <li class="list-group-item">{{ usuario.username }}</li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <img src="{{ user.perfilusuario.avatar.url }}" 
+                            class="rounded-circle shadow me-2" 
+                            style="width: 30px;" >
+                            <span>{{ usuario.username }}</span>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -24,8 +28,8 @@
             {% if user in grupo.usuarios.all %}
                 <div id="chat-mensajes" class="border p-3 rounded mb-3" style="height: 400px; overflow-y: auto;">
                     {% for mensaje in mensajes %}
-                        <div class="mb-2">
-                            <strong>{{ mensaje.usuario.username }}:</strong>
+                    <div class="mb-2 border {% if mensaje.usuario == user %}text-end{% else %}text-start{% endif %}">
+                            <strong class="d-block">{{ mensaje.usuario.username }}</strong>
                             <span>{{ mensaje.contenido }}</span>
                             <small class="text-muted">{{ mensaje.fecha_creacion|date:"H:i d/m/Y" }}</small>
                             {% if user == grupo.admin %}
@@ -42,27 +46,28 @@
                     {% csrf_token %}
                     <div class="input-group">
                         <textarea name="contenido" class="form-control" rows="2" placeholder="Escribe un mensaje..."></textarea>
-                        <button type="submit" class="btn btn-grad ms-2">Enviar</button>
+                        <button type="submit" class="btn btn-info text-white
+                        shadow ronded ms-2"><i class="fa-regular fa-paper-plane"></i></button>
                     </div>
                 </form>
             {% else %}
                 <!-- Botón para unirse al grupo o mostrar "Pendiente" / "Cancelar Solicitud" si ya se ha solicitado unión -->
-                <div class="text-center mt-4">
+                <div class="text-center mt-4 justify-content-center">
                     {% if grupo.tipo == 'publico' %}
                         <form method="POST" action="{% url 'unirse_grupo' grupo.id %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-grad">Unirse</button>
+                            <button type="submit" class="btn btn-grad-2">Unirse</button>
                         </form>
                     {% else %}
                         {% if solicitud_pendiente %}
                             <form method="POST" action="{% url 'cancelar_solicitud_grupo' grupo.id %}">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-warning">Cancelar Solicitud</button>
+                                <button type="submit" class="btn btn-warning text-white shadow rounded">Cancelar Solicitud</button>
                             </form>
                         {% else %}
                             <form method="POST" action="{% url 'unirse_grupo' grupo.id %}">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-grad">Solicitar</button>
+                                <button type="submit" class="btn btn-grad-2">Solicitar</button>
                             </form>
                         {% endif %}
                     {% endif %}
@@ -74,9 +79,9 @@
 
     <!-- Botones de Administración -->
     {% if user == grupo.admin %}
-        <div class="d-flex justify-content-between mt-3">
-            <a href="{% url 'gestionar_grupo' grupo.id %}" class="btn btn-grad">Administrar Grupo</a>
-            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarEliminarModal">Eliminar Grupo</button>
+        <div class="d-flex justify-content-end mt-3">
+            <a href="{% url 'gestionar_grupo' grupo.id %}" class="btn btn-grad-2">Administrar Grupo</a>
+            <button class="btn btn-danger shadow rounded" data-bs-toggle="modal" data-bs-target="#confirmarEliminarModal">Eliminar Grupo</button>
         </div>
 
         <!-- Modal de Confirmación para Eliminar Grupo -->

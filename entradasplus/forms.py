@@ -93,28 +93,32 @@ class MensajeGrupoForm(forms.ModelForm):
 # ---------------------------------------------------------
 
 class PerfilForm(forms.ModelForm):
-    first_name = forms.CharField(max_length=30, required=False, label="Nombre")
-    last_name = forms.CharField(max_length=30, required=False, label="Apellidos")
+    nombre = forms.CharField(max_length=30, required=False, label="Nombre")
+    apellidos = forms.CharField(max_length=50, required=False, label="Apellidos")
     email = forms.EmailField(required=True, label="Correo Electrónico")
 
     class Meta:
         model = PerfilUsuario
-        fields = ['avatar', 'dinero', 'descripcion']
+        fields = ['avatar', 'dinero', 'descripcion', 'nombre', 'apellidos']
 
     def __init__(self, *args, **kwargs):
         super(PerfilForm, self).__init__(*args, **kwargs)
         if self.instance and self.instance.user:
-            self.fields['first_name'].initial = self.instance.user.first_name
-            self.fields['last_name'].initial = self.instance.user.last_name
+            # Inicializa el campo de email desde el modelo User
             self.fields['email'].initial = self.instance.user.email
+            # Inicializa nombre y apellidos desde el modelo PerfilUsuario
+            self.fields['nombre'].initial = self.instance.nombre
+            self.fields['apellidos'].initial = self.instance.apellidos
 
     def save(self, commit=True):
         perfil_usuario = super().save(commit=False)
-        perfil_usuario.user.first_name = self.cleaned_data['first_name']
-        perfil_usuario.user.last_name = self.cleaned_data['last_name']
-        perfil_usuario.user.email = self.cleaned_data['email']
         
+        # Actualiza el email en el modelo User
+        if 'email' in self.cleaned_data:
+            perfil_usuario.user.email = self.cleaned_data['email']
+        
+        # Guarda ambos objetos si commit=True
         if commit:
-            perfil_usuario.user.save()
-            perfil_usuario.save()
+            perfil_usuario.user.save()  # Guarda el email en User
+            perfil_usuario.save()       # Guarda el perfil de usuario
         return perfil_usuario

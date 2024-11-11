@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 <div class="container mt-5">
-    <h2>Perfil de {{ user.username }}</h2>
+    <h2>Perfil de <strong> {{ user.username }}</strong></h2>
     <div class="row">
         <div class="col-md-4">
             <h4>Información Personal</h4>
@@ -16,8 +16,8 @@
             <p><strong>Apellidos:</strong> {{ perfil_usuario.apellidos }}</p>
             <p><strong>Descripcion:</strong> {{ perfil_usuario.descripcion}}</p>
             <p><strong>Dinero Disponible:</strong> {{ perfil_usuario.dinero }}€</p>  
-            <a href="{% url 'editar_perfil' %}" class="btn btn-primary">Editar Información</a>
-            <a href="{% url 'eliminar_cuenta' %}" class="btn btn-danger mt-2">Eliminar Cuenta</a>
+            <a href="{% url 'editar_perfil' %}" class="btn btn-primary shadow rounded">Editar Información</a>
+            <a href="{% url 'eliminar_cuenta' %}" class="btn btn-danger shadow rounded">Eliminar Cuenta</a>
         </div>
         
         <div class="col-md-8">

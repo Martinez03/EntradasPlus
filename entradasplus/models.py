@@ -80,7 +80,7 @@ class PerfilUsuario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=30, blank=True)
     apellidos = models.CharField(max_length=50, blank=True)
-    avatar = models.ImageField(upload_to='avatars/', default='people.png', null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', default='avatars/people.png', null=True, blank=True)
     dinero = models.IntegerField(default=0)
     descripcion = models.TextField(blank=True)
     eventos_con_like = models.ManyToManyField('Evento', related_name='usuarios_con_like', blank=True)
