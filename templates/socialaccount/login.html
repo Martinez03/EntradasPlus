@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load allauth %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            {% if process == "connect" %}
+                <h1 class="text-center text-info">
+                    {% blocktrans with provider.name as provider %}Conectar con {{ provider }}{% endblocktrans %}
+                </h1>
+                <p class="text-center">
+                    {% blocktrans with provider.name as provider %}Estás a punto de conectar una nueva cuenta de terceros de {{ provider }}.{% endblocktrans %}
+                </p>
+            {% else %}
+                <h1 class="text-center text-primary">
+                    {% blocktrans with provider.name as provider %}Iniciar sesión con {{ provider }}{% endblocktrans %}
+                </h1>
+                <p class="text-center">
+                    {% blocktrans with provider.name as provider %}Estás a punto de iniciar sesión usando una cuenta de terceros de {{ provider }}.{% endblocktrans %}
+                </p>
+            {% endif %}
+
+            <form method="post" class="mt-4">
+                {% csrf_token %}
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg shadow rounded">
+                        {% trans "Continuar" %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

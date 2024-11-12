@@ -46,7 +46,7 @@
                                     <div class="col-md-11 ">
                                         <h3 class="fw-bold">{{ evento.nombre }}</h3>
                                     </div>
-                                    {% if request.user.is_authenticated %}
+                                    <!-- {% if request.user.is_authenticated %}
                                         <div class="col-md-1">
                                             <i type="submit" class="fa-regular fa-heart" style="cursor: pointer; font-size: 2rem; color: red;"></i>
                                         </div>
@@ -54,28 +54,28 @@
                                         <div class="col-md-1" data-bs-toggle="modal" data-bs-target="#loginModal">
                                             <i class="fa-regular fa-heart" style="cursor: pointer; font-size: 2rem; color: red;"></i>
                                         </div>
-                                    {% endif %}
+                                    {% endif %} -->
                                 </div>
                                 <hr>
                                 <h5><i class="fa-solid fa-location-dot text-danger"></i> {{ evento.lugar }}</h5>
                                 <p>{{ evento.descripcion }}</p>
             
                                 <hr class="my-2">
-                                <div class="row">
-                                    <div class="col-md-3 p-1 ms-3 rounded-pill border text-center bg-success text-white shadow">
-                                        <h5 class="mt-2">Disponible</h5>
+                                <div class="row justify-content-center">
+                                    <div class="col-md-3 rounded-pill border text-center bg-success text-white shadow d-flex justify-content-center align-items-center">
+                                        <h5 class="">Disponible</h5>
                                     </div>
-                                    <div class="col-md-4 mx-5 p-1 border rounded shadow text-center">
-                                        <h5 class="mt-2">{{ evento.fecha_evento }}</h5>
+                                    <div class="col-md-4 mx-5 p-1 border rounded shadow text-center justify-content-center align-items-center">
+                                        <h5 class="">{{ evento.fecha_evento }}</h5>
                                     </div>
                                     {% if request.user.is_authenticated %}
                                         <!-- Si el usuario está autenticado, el botón "Comprar" redirige a la página de compra -->
-                                        <a href="{% url 'comprar_evento' evento.id %}" class="col-md-3 border btn btn-info rounded-pill p-1 shadow text-center text-white bg-info" style="cursor: pointer; text-decoration: none;">
+                                        <a href="{% url 'comprar_evento' evento.id %}" class="col-md-3 border btn btn-info rounded-pill  shadow text-center text-white bg-info d-flex justify-content-center align-items-center " style="cursor: pointer; text-decoration: none; ">
                                             <h5 class="mt-2"><i class="fa-solid fa-ticket"></i> Comprar</h5>
                                         </a>
                                     {% else %}
                                         <!-- Si el usuario no está autenticado, el botón "Comprar" abre el modal de inicio de sesión -->
-                                        <a class="col-md-3 border btn btn-info rounded-pill p-1 shadow text-center text-white bg-info" style="cursor: pointer; text-decoration: none;" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                        <a class="col-md-3 border btn btn-info rounded-pill shadow text-center text-white bg-info d-flex justify-content-center align-items-center" style="cursor: pointer; text-decoration: none;" data-bs-toggle="modal" data-bs-target="#loginModal">
                                             <h5 class="mt-2"><i class="fa-solid fa-ticket"></i> Comprar</h5>
                                         </a>
                                     {% endif %}

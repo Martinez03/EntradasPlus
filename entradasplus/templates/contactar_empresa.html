@@ -1,10 +1,8 @@
-{% extends 'base.html' %}
 
+{% extends "base.html" %}
 {% block content %}
-<div class="signup-container">
-    <h2>Contacta con Nosotros</h2>
-
-    {% if form.errors %}
+{% load widget_tweaks %}
+{% if form.errors %}
         <div class="error-message">
             <p>Por favor, corrige los siguientes errores:</p>
             <ul>
@@ -16,11 +14,59 @@
             </ul>
         </div>
     {% endif %}
+<div class="container mt-5">
+    <div class="container d-flex justify-content-center">
+        <div class="col-md-6">
+            <h2 class="text-center mt-3 fw-bold">Contacta con Nosotros</h2>
+            <form method="POST" enctype="multipart/form-data" class="was-validated">
+                {% csrf_token %}
 
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}  <!-- Renderizar el formulario completo -->
-        <button type="submit" class="btn btn-primary">Enviar</button>
-    </form>
+                <div class="form-group mb-3">
+                    <label for="" class="form-label"> Nombre</label>
+                    {{ form.nombre |add_class:"form-control rounded" }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_last_name" class="form-label">Email</label>
+                    {{ form.email|add_class:"form-control rounded" }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_email" class="form-label">Telefono</label>
+                    {{ form.telefono|add_class:"form-control rounded" }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_avatar" class="form-label">Direccion</label>
+                    {{ form.direccion|add_class:"form-control rounded" }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_dinero" class="form-label">Nombre de usuario</label>
+                    {{ form.username|add_class:"form-control rounded" }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_dinero" class="form-label">Contraseña</label>
+                    {{ form.password|add_class:"form-control rounded" }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_dinero" class="form-label">Email de usuario</label>
+                    {{ form.email_usuario|add_class:"form-control rounded" }}
+                </div>
+                <button type="submit" class="btn btn-primary shadow rounded mb-5">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
+
+
+<!-- ['nombre', 'email', 'telefono', 'direccion'] -->
+ <!-- username=self.cleaned_data['username'],
+            password=self.cleaned_data['password'],
+            email=self.cleaned_data['email_usuario'] -->
+
+
+

@@ -72,12 +72,20 @@ def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, '¡Registro exitoso! Ahora puedes iniciar sesión.')
-            return redirect('/')
+            user = form.save()  # Guardar el usuario
+            messages.success(request, '¡Registro exitoso! Has iniciado sesión automáticamente.')
+            
+            # Iniciar sesión automáticamente
+            login(request, user)
+            return redirect('/')  # Cambia '/' a la página que desees mostrar después del login
         else:
-            messages.error(request, 'La contraseña debe contener caracteres y números.')
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
             return redirect('/')
+    else:
+        form = RegisterForm()
+    return render(request, 'register.html', {'form': form})
         
 def contactar_empresa(request):
     if request.method == 'POST':
@@ -130,6 +138,9 @@ def verificar_empresa(request, empresa_id):
 @empresa_verificada_required
 def editar_empresa(request):
     empresa = get_object_or_404(Empresa, usuario=request.user)
+
+    user_empresa = request.user.is_authenticated and Empresa.objects.filter(usuario=request.user).exists()
+
     if request.method == 'POST':
         form = EditarEmpresaForm(request.POST, instance=empresa)
         if form.is_valid():
@@ -138,7 +149,9 @@ def editar_empresa(request):
             return redirect('mi_empresa')
     else:
         form = EditarEmpresaForm(instance=empresa)
-    return render(request, 'editar_empresa.html', {'form': form})
+    
+    return render(request, 'editar_empresa.html', {'form': form, 'user_empresa': user_empresa})
+
 
 def lista_empresas_verificadas(request):
     empresas = Empresa.objects.filter(estado='verificada')
@@ -427,15 +440,28 @@ def perfil(request):
     perfil_usuario = request.user.perfilusuario
     historial_compras = Pedido.objects.filter(usuario=request.user)
     grupos_creados = Grupo.objects.filter(admin=request.user)
+    user_empresa = False
+    if request.user.is_authenticated:
+        try:
+            user_empresa = Empresa.objects.filter(usuario=request.user).exists()
+        except Empresa.DoesNotExist:
+            user_empresa = False
     return render(request, 'perfil.html', {
         'perfil_usuario': perfil_usuario,
         'historial_compras': historial_compras,
         'grupos_creados': grupos_creados,
+        'user_empresa':user_empresa
     })
 
 @login_required
 def editar_perfil(request):
     perfil_usuario = request.user.perfilusuario
+    user_empresa = False
+    if request.user.is_authenticated:
+        try:
+            user_empresa = Empresa.objects.filter(usuario=request.user).exists()
+        except Empresa.DoesNotExist:
+            user_empresa = False
     if request.method == 'POST':
         form = PerfilForm(request.POST, request.FILES, instance=perfil_usuario)
         if form.is_valid():
@@ -443,7 +469,7 @@ def editar_perfil(request):
             return redirect('perfil')
     else:
         form = PerfilForm(instance=perfil_usuario)
-    return render(request, 'editar_perfil.html', {'form': form})
+    return render(request, 'editar_perfil.html', {'form': form, 'user_empresa':user_empresa})
 
 @login_required
 def eliminar_cuenta(request):

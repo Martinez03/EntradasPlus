@@ -15,7 +15,12 @@
             </div>
         </div>
         <div class="col-md-2">
+            {% if request.user.is_authenticated %}
             <a href="{% url 'crear_grupo' %}" class="btn btn-grad-2">Crear Grupo</a>
+            {% else %}
+            <!-- Si el usuario no está autenticado, el botón "Comprar" abre el modal de inicio de sesión -->
+            <a class="btn btn-grad-2" data-bs-toggle="modal" data-bs-target="#loginModal">Crear grupo</a>
+            {% endif %}
         </div>
     </div>
 
@@ -23,6 +28,7 @@
     <div class="row">
         {% for grupo in grupos %}
         <div class="col-md-4 mb-3">
+            {% if request.user.is_authenticated %}
             <a class="card text-center h-100 card-grupo" style=" border-radius:70px;" href="{% url 'detalles_grupo' grupo.id %}">
                 <img src="{{ grupo.foto.url }}" class="img-fluid img-local card-img-top " style="object-fit: cover; height: 310px; width: 100%; border-radius: 70px 70px 0 0;">
                 <div class="card-body">
@@ -31,6 +37,16 @@
                     
                 </div>
             </a>
+            {% else %}
+            <a class="card text-center h-100 card-grupo" style=" border-radius:70px;" data-bs-toggle="modal" data-bs-target="#loginModal">
+                <img src="{{ grupo.foto.url }}" class="img-fluid img-local card-img-top " style="object-fit: cover; height: 310px; width: 100%; border-radius: 70px 70px 0 0;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ grupo.nombre }}</h5>
+                    <p class="card-text">{{ grupo.descripcion|truncatewords:20 }}</p>
+                    
+                </div>
+            </a>
+            {% endif %}
         </div>
         {% empty %}
         <p>No se encontraron grupos.</p>
