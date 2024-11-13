@@ -11,8 +11,8 @@ from django.utils import timezone
 from django.db.models import Q
 from datetime import datetime
 
-from .models import Entrada, Empresa, Evento, Mensaje, Pedido, Grupo, PerfilUsuario, SolicitudGrupo, MensajeGrupo, MensajeCalendario
-from .forms import EventoForm, EmpresaForm, RegisterForm, MensajeForm, PerfilForm, GrupoForm, MensajeGrupoForm, EditarEmpresaForm, EditarEventoForm, MensajeCalendarioForm
+from .models import Reseña, Entrada, Empresa, Evento, Mensaje, Pedido, Grupo, PerfilUsuario, SolicitudGrupo, MensajeGrupo, MensajeCalendario
+from .forms import ReseñaForm, EventoForm, EmpresaForm, RegisterForm, MensajeForm, PerfilForm, GrupoForm, MensajeGrupoForm, EditarEmpresaForm, EditarEventoForm, MensajeCalendarioForm
 from .decorators import empresa_verificada_required
 from django.contrib.admin.views.decorators import staff_member_required
 import calendar
@@ -119,9 +119,16 @@ def day_events_view(request, year, month, day):
     })
 
 
+from django.db.models import Avg
+
 def colaboradores(request):
     empresas = Empresa.objects.filter(estado='verificada')
-    return render(request, 'colaboradores.html',{'empresas': empresas})
+
+    # Añadir valoración media a cada empresa
+    for empresa in empresas:
+        empresa.valoracion_media = empresa.reseñas.aggregate(Avg('calificacion'))['calificacion__avg']
+
+    return render(request, 'colaboradores.html', {'empresas': empresas})
 
 # ---------------------------------------------------------
 #            SECCION INICIO Y CIERRE DE SESIÓN
@@ -241,10 +248,23 @@ def lista_empresas_verificadas(request):
     empresas = Empresa.objects.filter(estado='verificada')
     return render(request, 'colaboradores.html', {'empresas': empresas})
 
+from django.db.models import Avg
+
 def detalle_empresa(request, empresa_id):
     empresa = get_object_or_404(Empresa, id=empresa_id, estado='verificada')
     eventos = Evento.objects.filter(empresa=empresa)
-    return render(request, 'detalle_empresa.html', {'empresa': empresa, 'eventos': eventos})
+    reseñas = Reseña.objects.filter(empresa=empresa).select_related('evento', 'usuario')
+
+    # Calcular la valoración media de la empresa
+    valoracion_media = reseñas.aggregate(Avg('calificacion'))['calificacion__avg']
+
+    return render(request, 'detalle_empresa.html', {
+        'empresa': empresa,
+        'eventos': eventos,
+        'reseñas': reseñas,
+        'valoracion_media': valoracion_media,
+    })
+
 
 # ---------------------------------------------------------
 #                  SECCION EVENTOS
@@ -356,6 +376,55 @@ def chat_evento(request, evento_id):
     else:
         form = MensajeForm()
     return render(request, 'chat_evento.html', {'evento': evento, 'mensajes': mensajes, 'form': form})
+
+# ---------------------------------------------------------
+#                  SECCION RESEÑAS
+# ---------------------------------------------------------
+
+@login_required
+def crear_reseña(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
+    empresa = evento.empresa
+
+    if request.method == 'POST':
+        form = ReseñaForm(request.POST)
+        if form.is_valid():
+            reseña = form.save(commit=False)
+            reseña.evento = evento
+            reseña.empresa = empresa
+            reseña.usuario = request.user
+            reseña.save()
+            messages.success(request, '¡Reseña guardada con éxito!')
+            return redirect('detalles_evento', evento_id=evento_id) 
+    else:
+        form = ReseñaForm()
+
+    return render(request, 'crear_reseña.html', {'form': form, 'evento': evento})
+
+def ver_reseñas(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
+    reseñas = Reseña.objects.filter(evento=evento).select_related('usuario')
+    form = None
+
+    # Permitir creación de reseñas si el usuario está autenticado
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            form = ReseñaForm(request.POST)
+            if form.is_valid():
+                nueva_reseña = form.save(commit=False)
+                nueva_reseña.evento = evento
+                nueva_reseña.empresa = evento.empresa
+                nueva_reseña.usuario = request.user
+                nueva_reseña.save()
+                return redirect('ver_reseñas', evento_id=evento_id)
+        else:
+            form = ReseñaForm()
+
+    return render(request, 'reseñas.html', {
+        'evento': evento,
+        'reseñas': reseñas,
+        'form': form,
+    })
 
 # ---------------------------------------------------------
 #                  SECCION GRUPOS

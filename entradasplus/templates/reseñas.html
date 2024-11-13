@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <h2 class="text-center mt-4">Reseñas de {{ evento.nombre }}</h2>
+    <hr>
+    <div class="row">
+        {% for reseña in reseñas %}
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ reseña.usuario.username }}</h5>
+                    <p class="card-text">{{ reseña.comentario }}</p>
+                    <p class="card-text"><strong>Calificación:</strong> {{ reseña.calificacion }}/5</p>
+                    <p class="card-text"><small class="text-muted">Publicado el {{ reseña.fecha_creacion }}</small></p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center">No hay reseñas para este evento aún.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <hr>
+    <h3 class="mt-4">Añadir Reseña</h3>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Enviar Reseña</button>
+    </form>
+    {% else %}
+    <p class="text-center">Inicia sesión para dejar una reseña.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

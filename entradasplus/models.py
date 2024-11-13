@@ -66,11 +66,16 @@ class Pedido(models.Model):
         return f'Pedido de {self.usuario.username} - {self.entrada.evento.nombre}'
 
 class Reseña(models.Model):
-    evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
+    evento = models.ForeignKey(Evento, on_delete=models.CASCADE, related_name="reseñas")
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name="reseñas")
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     comentario = models.TextField()
     calificacion = models.IntegerField()
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Reseña de {self.usuario.username} para {self.evento.nombre} ({self.calificacion}/5)"
+
 
 # ---------------------------------------------------------
 #                SECCION MODELO PERFIL USUARIO

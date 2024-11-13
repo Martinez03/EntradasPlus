@@ -5,7 +5,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Evento, Empresa, Mensaje, Grupo, SolicitudGrupo, MensajeGrupo, PerfilUsuario, MensajeCalendario
+from .models import Reseña, Evento, Empresa, Mensaje, Grupo, SolicitudGrupo, MensajeGrupo, PerfilUsuario, MensajeCalendario
 from django.core.exceptions import ValidationError
 from django.contrib.admin.widgets import AdminSplitDateTime
 
@@ -117,6 +117,19 @@ class MensajeGrupoForm(forms.ModelForm):
     class Meta:
         model = MensajeGrupo
         fields = ['contenido']
+
+# ---------------------------------------------------------
+#                 SECCION FORMULARIO DE RESEÑA
+# ---------------------------------------------------------
+
+class ReseñaForm(forms.ModelForm):
+    class Meta:
+        model = Reseña
+        fields = ['comentario', 'calificacion']
+        widgets = {
+            'comentario': forms.Textarea(attrs={'rows': 4}),
+            'calificacion': forms.NumberInput(attrs={'min': 1, 'max': 5}),
+        }
 
 # ---------------------------------------------------------
 #               SECCION FORMULARIO DE PERFIL USUARIO

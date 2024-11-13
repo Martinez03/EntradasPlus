@@ -2,7 +2,6 @@
 
 {% block content %}
 <div class="container-fluid">
-    
     <div class="row mt-3">
         <div class="col-md-2"></div>
         <div class="col-md-8 text-center align-content-center">
@@ -11,7 +10,6 @@
     </div>
     <hr class="my-3">
 
-   
     {% if not user.is_authenticated %}
         <div class="row mt-3">
             <div class="col-md-2"></div>
@@ -24,7 +22,6 @@
         <hr class="my-3">
     {% endif %}
 
-
     <div class="row">
         <div class="col-md-12 text-center">
             <h3 class="fw-bold text-center">Empresas</h3>
@@ -34,10 +31,16 @@
                     <a href="{% url 'detalle_empresa' empresa.id %}" class="text-decoration-none">
                         <div class="card card-custom shadow h-100">
                             <div class="card-body">
-                                <h3 class="card-title fw-bold text-dark">
-                                    {{ empresa.nombre }}
-                                </h3>
+                                <h3 class="card-title fw-bold text-dark">{{ empresa.nombre }}</h3>
                                 <p class="card-text text-dark">{{ empresa.descripcion }}</p>
+                                {% if empresa.valoracion_media %}
+                                    <p class="text-dark">
+                                        <strong>Valoración media:</strong>
+                                        {{ empresa.valoracion_media|floatformat:2 }} / 5
+                                    </p>
+                                {% else %}
+                                    <p class="text-muted">Aún no tiene reseñas.</p>
+                                {% endif %}
                             </div>
                         </div>
                     </a>

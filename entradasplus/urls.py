@@ -69,6 +69,13 @@ urlpatterns = [
     path('grupos/mensajes/<int:mensaje_id>/eliminar/', views.eliminar_mensaje_grupo, name='eliminar_mensaje_grupo'),
     path('grupos/<int:grupo_id>/eliminar/', views.eliminar_grupo, name='eliminar_grupo'),
     path('grupos/<int:grupo_id>/cancelar_solicitud/', views.cancelar_solicitud_grupo, name='cancelar_solicitud_grupo'),
+
+    # -----------------------------------------------------
+    #                      SECCION RESEÑAS
+    # -----------------------------------------------------
+    path('evento/<int:evento_id>/reseña/', views.crear_reseña, name='crear_reseña'),
+    path('evento/<int:evento_id>/reseñas/', views.ver_reseñas, name='ver_reseñas'),
+
     # -----------------------------------------------------
     #                  SECCION PERFIL DEL USUARIO
     # -----------------------------------------------------

@@ -8,6 +8,15 @@
     <p><strong>Teléfono:</strong> {{ empresa.telefono }}</p>
     <p><strong>Dirección:</strong> {{ empresa.direccion }}</p>
 
+    <h3 class="mt-4">Valoración Media</h3>
+    <p>
+        {% if valoracion_media %}
+            <strong>{{ valoracion_media|floatformat:2 }}</strong> / 5
+        {% else %}
+            Aún no tiene reseñas.
+        {% endif %}
+    </p>
+
     <h3 class="mt-4">Eventos Creados por {{ empresa.nombre }}</h3>
     <ul class="list-group mt-3">
         {% for evento in eventos %}
@@ -16,5 +25,24 @@
             <li class="list-group-item">Esta empresa no tiene eventos registrados.</li>
         {% endfor %}
     </ul>
+
+    <h3 class="mt-4">Reseñas de los Eventos</h3>
+    <div class="row mt-3">
+        {% for reseña in reseñas %}
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ reseña.usuario.username }}</h5>
+                    <p><strong>Evento:</strong> {{ reseña.evento.nombre }}</p>
+                    <p>{{ reseña.comentario }}</p>
+                    <p><strong>Calificación:</strong> {{ reseña.calificacion }}/5</p>
+                    <p><small class="text-muted">Publicado el {{ reseña.fecha_creacion }}</small></p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">Aún no hay reseñas para los eventos de esta empresa.</p>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
