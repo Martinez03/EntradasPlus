@@ -2,7 +2,7 @@
 #                       IMPORTS
 # ---------------------------------------------------------
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -11,10 +11,14 @@ from django.utils import timezone
 from django.db.models import Q
 from datetime import datetime
 
-from .models import Entrada, Empresa, Evento, Mensaje, Pedido, Grupo, PerfilUsuario, SolicitudGrupo, MensajeGrupo
-from .forms import EventoForm, EmpresaForm, RegisterForm, MensajeForm, PerfilForm, GrupoForm, MensajeGrupoForm, EditarEmpresaForm, EditarEventoForm
+from .models import Entrada, Empresa, Evento, Mensaje, Pedido, Grupo, PerfilUsuario, SolicitudGrupo, MensajeGrupo, MensajeCalendario
+from .forms import EventoForm, EmpresaForm, RegisterForm, MensajeForm, PerfilForm, GrupoForm, MensajeGrupoForm, EditarEmpresaForm, EditarEventoForm, MensajeCalendarioForm
 from .decorators import empresa_verificada_required
 from django.contrib.admin.views.decorators import staff_member_required
+import calendar
+import locale
+
+locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
 
 # ---------------------------------------------------------
 #                  SECCION PÁGINA PRINCIPAL
@@ -33,8 +37,87 @@ def index(request):
         'user_empresa': user_empresa
     })
 
-def calendar(request):
-    return render(request, 'calendar.html', {})
+def calendar_view(request, year=None, month=None):
+    
+    today = datetime.today()
+    year = year or today.year
+    month = month or today.month
+    current_day = today.day if (today.year == year and today.month == month) else None
+
+    
+    month_name = datetime(year, month, 1).strftime('%B')
+
+    
+    cal = calendar.Calendar(firstweekday=0)  
+    days = [day for week in cal.monthdayscalendar(year, month) for day in week]
+    
+     
+    eventos_mes = Evento.objects.filter(fecha_evento__year=year, fecha_evento__month=month)
+    
+    
+    eventos_por_dia = {}
+    for evento in eventos_mes:
+        dia_evento = evento.fecha_evento.day
+        if dia_evento not in eventos_por_dia:
+            eventos_por_dia[dia_evento] = evento.nombre  
+
+ 
+    days_with_events = [
+        {
+            "day": day,
+            "event": eventos_por_dia.get(day, ""),  # Primer evento o vacío
+            "is_today": (day == current_day) if day != 0 else False,
+            "is_empty": (day == 0)
+        }
+        for day in days
+    ]
+    
+
+    next_month = month + 1 if month < 12 else 1
+    next_year = year if month < 12 else year + 1
+    prev_month = month - 1 if month > 1 else 12
+    prev_year = year if month > 1 else year - 1
+
+    return render(request, "calendar.html", {
+        "days_with_events": days_with_events,
+        "month_name": month_name.capitalize(),
+        "year": year,
+        "month": month,
+        "next_month": next_month,
+        "next_year": next_year,
+        "prev_month": prev_month,
+        "prev_year": prev_year,
+    })
+
+def day_events_view(request, year, month, day):
+    selected_date = datetime(year, month, day)
+    eventos_del_dia = Evento.objects.filter(fecha_evento__date=selected_date.date())
+
+    # Obtener los mensajes del día
+    mensajes_del_dia = MensajeCalendario.objects.filter(dia=selected_date.date()).order_by('fecha_creacion')
+
+    # Manejo del formulario para nuevos mensajes
+    if request.method == "POST":
+        form = MensajeCalendarioForm(request.POST)
+        if form.is_valid():
+            # Guardar el mensaje solo si el formulario es válido
+            MensajeCalendario.objects.create(
+                dia=selected_date.date(),
+                usuario=request.user,
+                contenido=form.cleaned_data['contenido']
+            )
+            return redirect('day_events_view', year=year, month=month, day=day)  # Redirigir para evitar reenvío del formulario
+
+    else:
+        form = MensajeCalendarioForm()
+
+    return render(request, "calendario_dia.html", {
+        "eventos": eventos_del_dia,
+        "selected_date": selected_date.strftime("%d de %B de %Y"),
+        "mensajes": mensajes_del_dia,
+        "form": form,  # Pasar el formulario al template
+    })
+
 
 def colaboradores(request):
     empresas = Empresa.objects.filter(estado='verificada')

@@ -104,15 +104,7 @@ flex-grow: 1;
     flex-flow: column;
     align-items: center;
     font-family: "Poppins", serif;
-    background: rgb(238, 174, 202);
-    background: radial-gradient(circle,
-            rgba(238, 174, 202, 1) 0%,
-            rgba(148, 187, 233, 1) 100%);
-}
-
-.h1 {
-    font-weight: 800;
-    margin: 1rem 0 0;
+    background-color: white; /* Cambia el fondo principal a blanco */
 }
 
 .ul-calendar {
@@ -128,16 +120,24 @@ flex-grow: 1;
     height: 10rem;
     margin: 0.25rem;
     flex-flow: column;
-    border-radius: 0.2rem;
     padding: 1rem;
     font-weight: 300;
     font-size: 0.8rem;
     box-sizing: border-box;
-    background: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.li-calendar:hover {
+    cursor: pointer;
+    color: inherit; 
+    cursor: pointer;
+    background-color: 	#eeeeee;
+    /* Un poco gris */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.empty-day {
+    opacity: 0.5; /* Opacidad para los días vacíos */
+    pointer-events: none; /* Para que no sea clickeable, si lo deseas */
 }
 
 .li-calendar time {
@@ -148,6 +148,10 @@ flex-grow: 1;
 
 .li-calendar.today time {
     font-weight: 800;
+    background: linear-gradient(to right, #cbcee3, #dcb7d6);
+}
+.li-calendar.today {
+    background: linear-gradient(to right, #cbcee3, #dcb7d6);
 }
 
 .card-custom {

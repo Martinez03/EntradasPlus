@@ -5,7 +5,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Evento, Empresa, Mensaje, Grupo, SolicitudGrupo, MensajeGrupo, PerfilUsuario
+from .models import Evento, Empresa, Mensaje, Grupo, SolicitudGrupo, MensajeGrupo, PerfilUsuario, MensajeCalendario
 from django.core.exceptions import ValidationError
 
 # ---------------------------------------------------------
@@ -82,6 +82,19 @@ class RegisterForm(UserCreationForm):
 class MensajeForm(forms.ModelForm):
     class Meta:
         model = Mensaje
+        fields = ['contenido']
+        widgets = {
+            'contenido': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Escribe un mensaje...'}),
+        }
+
+
+# ---------------------------------------------------------
+#                 SECCION FORMULARIO DE CALENDARIO
+# ---------------------------------------------------------
+
+class MensajeCalendarioForm(forms.ModelForm):
+    class Meta:
+        model = MensajeCalendario
         fields = ['contenido']
         widgets = {
             'contenido': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Escribe un mensaje...'}),

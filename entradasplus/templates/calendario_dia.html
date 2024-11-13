@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid my-3">
+    <h1 class="fw-bold text-center">{{ selected_date }}</h1>
+    <div class="row">
+        <hr>
+        <div class="col-md-6">
+            <h2 class="text-center">Eventos</h2>
+            <hr>
+            <div class="row justify-content-center" style="max-height: 600px; /* Ajusta esto según tu diseño */
+    overflow-y: auto;">
+                {% for evento in eventos %}
+                <div class="col-md-8 mb-2">
+                    <!-- Tarjeta del evento -->
+                    <div class="card card-custom shadow h-100" data-bs-toggle="modal"
+                        data-bs-target="#modal-{{ evento.id }}">
+                        {% if evento.imagen %}
+                        <img src="{{ evento.imagen.url }}" class="img-fluid img-local card-img-top"
+                            style="width: 100%; object-fit: cover; height: 20rem;" alt="{{ evento.nombre }}">
+                        {% endif %}
+                        <h3 class="card-title mt-3 mx-2 fw-bold">{{ evento.nombre }}</h3>
+                        <hr class="my-3">
+                        <div class="col-md-12 text-center">
+                            <h5><i class="fa-solid fa-location-dot mb-3 text-danger"></i> {{ evento.lugar }}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="modal-{{ evento.id }}" tabindex="-1" aria-labelledby="modalLabel{{ evento.id }}"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            {% if evento.imagen %}
+                            <img src="{{ evento.imagen.url }}" class="img-fluid rounded shadow" alt="{{ evento.nombre }}"
+                                style="width: 100%; object-fit: cover; height: 30rem;">
+                            {% endif %}
+                            <div class="modal-container">
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-11 ">
+                                            <h3 class="fw-bold">{{ evento.nombre }}</h3>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <h5><i class="fa-solid fa-location-dot text-danger"></i> {{ evento.lugar }}</h5>
+                                    <p>{{ evento.descripcion }}</p>
+
+                                    <hr class="my-2">
+                                    <div class="row justify-content-center">
+                                        <div
+                                            class="col-md-3 rounded-pill border text-center bg-success text-white shadow d-flex justify-content-center align-items-center">
+                                            <h5 class="">Disponible</h5>
+                                        </div>
+                                        <div
+                                            class="col-md-4 mx-5 p-1 border rounded shadow text-center justify-content-center align-items-center">
+                                            <h5 class="">{{ evento.fecha_evento }}</h5>
+                                        </div>
+                                        {% if request.user.is_authenticated %}
+                                        <!-- Si el usuario está autenticado, el botón "Comprar" redirige a la página de compra -->
+                                        <a href="{% url 'comprar_evento' evento.id %}"
+                                            class="col-md-3 border btn btn-info rounded-pill  shadow text-center text-white bg-info d-flex justify-content-center align-items-center "
+                                            style="cursor: pointer; text-decoration: none; ">
+                                            <h5 class="mt-2"><i class="fa-solid fa-ticket"></i> Comprar</h5>
+                                        </a>
+                                        {% else %}
+                                        <!-- Si el usuario no está autenticado, el botón "Comprar" abre el modal de inicio de sesión -->
+                                        <a class="col-md-3 border btn btn-info rounded-pill shadow text-center text-white bg-info d-flex justify-content-center align-items-center"
+                                            style="cursor: pointer; text-decoration: none;" data-bs-toggle="modal"
+                                            data-bs-target="#loginModal">
+                                            <h5 class="mt-2"><i class="fa-solid fa-ticket"></i> Comprar</h5>
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                    <div class="mt-4 text-center">
+                                        <a href="{% url 'chat_evento' evento.id %}" class="btn btn-secondary"><i
+                                                class="fa fa-comments"></i> Chat del Evento</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                    <p class="text-muted text-center">No hay eventos para este dia</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h2 class="text-center">Chat del dia</h2>
+            <hr>
+            <div id="chat-mensajes" class="border p-3 rounded mb-3" style="height: 600px; overflow-y: auto;">
+                {% for mensaje in mensajes %}
+                <div class="mb-2 border {% if mensaje.usuario == user %}text-end{% else %}text-start{% endif %}">
+                        <strong class="d-block">{{ mensaje.usuario.username }}</strong>
+                        <span>{{ mensaje.contenido }}</span>
+                        <small class="text-muted">{{ mensaje.fecha_creacion|date:"H:i d/m/Y" }}</small>
+                    </div>
+                {% empty %}
+                    <p class="text-muted text-center">No hay mensajes en el chat. ¡Sé el primero en comentar!</p>
+                {% endfor %}
+            </div>
+            <form method="POST" class="mt-3">
+                {% csrf_token %}
+                <div class="input-group">
+                    <textarea name="contenido" class="form-control" rows="2" placeholder="Escribe un mensaje..."></textarea>
+                    <button type="submit" class="btn btn-info text-white
+                                shadow ronded ms-2"><i class="fa-regular fa-paper-plane"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

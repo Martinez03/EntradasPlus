@@ -16,7 +16,9 @@ urlpatterns = [
     #                  SECCION PÁGINA PRINCIPAL
     # -----------------------------------------------------
     path('', views.index, name='home'),
-    path('calendar', views.calendar, name='calendar'),
+    path('calendar/', views.calendar_view, name='calendar'),
+    path('calendar/<int:year>/<int:month>/', views.calendar_view, name='calendar'),
+    path('calendario/<int:year>/<int:month>/<int:day>/', views.day_events_view, name='day_events_view'),
     path('trending/', views.trending, name='trending'),
     path('colaboradores/', views.colaboradores),
 

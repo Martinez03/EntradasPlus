@@ -100,6 +100,21 @@ class Mensaje(models.Model):
 
     def __str__(self):
         return f"{self.usuario.username} - {self.evento.nombre}"
+    
+
+
+# ---------------------------------------------------------
+#                  SECCION MODELOS CALENDARIO
+# ---------------------------------------------------------
+
+class MensajeCalendario(models.Model):
+    dia = models.DateField()  # Relación con un día específico
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    contenido = models.TextField()
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.usuario.username} - {self.dia.strftime('%Y-%m-%d')}"
 
 # ---------------------------------------------------------
 #                  SECCION MODELOS GRUPOS
