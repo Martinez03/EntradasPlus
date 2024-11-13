@@ -7,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Evento, Empresa, Mensaje, Grupo, SolicitudGrupo, MensajeGrupo, PerfilUsuario, MensajeCalendario
 from django.core.exceptions import ValidationError
+from django.contrib.admin.widgets import AdminSplitDateTime
 
 # ---------------------------------------------------------
 #                  SECCION FORMULARIOS DE EVENTO
@@ -15,8 +16,11 @@ from django.core.exceptions import ValidationError
 class EventoForm(forms.ModelForm):
     class Meta:
         model = Evento
-        fields = ['nombre', 'descripcion', 'fecha_evento', 'lugar', 'capacidad']
-
+        fields = ['nombre', 'descripcion', 'fecha_evento', 'lugar', 'capacidad', 'imagen']
+        date = forms.DateField()
+        widgets = {
+            'fecha_evento':forms.TextInput(attrs={'type':'datetime-local'}),
+        }
 class EditarEventoForm(forms.ModelForm):
     class Meta:
         model = Evento

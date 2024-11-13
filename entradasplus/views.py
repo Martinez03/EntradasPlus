@@ -187,10 +187,13 @@ def contactar_empresa(request):
 def miEmpresa(request):
     if request.user.is_authenticated:
         user_empresa = True
-        empresa = Empresa.objects.get(usuario=request.user)    
+        empresa = Empresa.objects.get(usuario=request.user)   
+        eventos = Evento.objects.filter(empresa=empresa) 
     return render(request, 'mi_empresa.html', {
         'empresa': empresa,
-        'user_empresa': user_empresa
+        'user_empresa': user_empresa,
+        'eventos': eventos,
+        'user_empresa': True
     })
 
 def verificar_estado_empresa(user):
@@ -222,8 +225,6 @@ def verificar_empresa(request, empresa_id):
 def editar_empresa(request):
     empresa = get_object_or_404(Empresa, usuario=request.user)
 
-    user_empresa = request.user.is_authenticated and Empresa.objects.filter(usuario=request.user).exists()
-
     if request.method == 'POST':
         form = EditarEmpresaForm(request.POST, instance=empresa)
         if form.is_valid():
@@ -233,7 +234,7 @@ def editar_empresa(request):
     else:
         form = EditarEmpresaForm(instance=empresa)
     
-    return render(request, 'editar_empresa.html', {'form': form, 'user_empresa': user_empresa})
+    return render(request, 'editar_empresa.html', {'form': form, 'user_empresa': True})
 
 
 def lista_empresas_verificadas(request):
@@ -251,16 +252,17 @@ def detalle_empresa(request, empresa_id):
 
 @empresa_verificada_required
 def crear_evento(request):
+    empresa = Empresa.objects.get(usuario=request.user)
     if request.method == 'POST':
         form = EventoForm(request.POST, request.FILES)
         if form.is_valid():
             evento = form.save(commit=False)
-            evento.creador = request.user
+            evento.empresa = empresa
             evento.save()
-            return redirect('mis_eventos')
+            return redirect('mi_empresa')
     else:
         form = EventoForm()
-    return render(request, 'crear_evento.html', {'form': form})
+    return render(request, 'crear_evento.html', {'form': form, 'user_empresa': True})
 
 @empresa_verificada_required
 def editar_evento(request, evento_id):
