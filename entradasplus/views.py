@@ -158,14 +158,17 @@ def login_empresa(request):
 #                  SECCION REGISTRO
 # ---------------------------------------------------------
 
+from django.contrib.auth import login
+
 def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()  # Guardar el usuario
             messages.success(request, '¡Registro exitoso! Has iniciado sesión automáticamente.')
-            
-            # Iniciar sesión automáticamente
+
+            # Especificar el backend explícitamente
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, user)
             return redirect('/')  # Cambia '/' a la página que desees mostrar después del login
         else:
@@ -176,6 +179,7 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request, 'register.html', {'form': form})
+
         
 def contactar_empresa(request):
     if request.method == 'POST':
