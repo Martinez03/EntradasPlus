@@ -1,56 +1,183 @@
 {% extends "base.html" %}
 {% block content %}
 {% load widget_tweaks %}
-<div class="container d-flex justify-content-center">
-    <div class="col-md-6">
-        <h2 class="text-center mt-3 fw-bold">Crear Nuevo Evento</h2>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Formulario para crear evento -->
+        <div class="col-md-6">
+            {% if evento %}
+            <!-- Información del Evento en una Card -->
+            <div class="card mt-3 shadow">
+                <!-- Imagen del Evento -->
+                <img src="{{ evento.imagen.url }}" class="card-img-top img-fluid" s
+                    tyle="width: 100%; object-fit: cover; height: 30rem;" alt="Imagen del evento">
 
-        <form method="POST" enctype="multipart/form-data" class="mt-4">
-            {% csrf_token %}
-
-            <!-- Campo nombre -->
-            <div class="form-group mb-3">
-                <label for="{{ form.nombre.id_for_label }}">Nombre del Evento</label>
-                {{ form.nombre|add_class:"form-control rounded" }}
-                <div class="invalid-feedback">Por favor, ingresa el nombre del evento.</div>
+                <!-- Cuerpo de la Card -->
+                <div class="card-body">
+                    <h2 class="card-title text-center fw-bold">{{ evento.nombre }}</h2>
+                    <p class="card-text"><strong>Descripción:</strong> {{ evento.descripcion }}</p>
+                    <p class="card-text"><strong>Fecha del Evento:</strong> {{ evento.fecha_evento }}</p>
+                    <p class="card-text"><strong>Lugar:</strong> {{ evento.lugar }}</p>
+                    <p class="card-text"><strong>Capacidad:</strong> {{ evento.capacidad }}</p>
+                    
+                    <!-- Botones de editar y eliminar -->
+                    <div class="d-flex justify-content-end mt-3">
+                        <!-- Botón de Editar Evento -->
+                        <a href="{% url 'editar_evento' evento.id %}" class="btn btn-dark me-2 shadow rounded text-white">Editar Evento</a>
+                
+                        <!-- Botón de Eliminar Evento -->
+                        <form action="{% url 'eliminar_evento' evento.id %}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este evento?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger shadow rounded">Eliminar Evento</button>
+                        </form>
+                    </div>
+                </div>
             </div>
+            {% else %}
+            <!-- Formulario de Creación de Evento -->
+            <h2 class="text-center mt-3 fw-bold">Crear Nuevo Evento</h2>
 
-            <!-- Campo descripción -->
-            <div class="form-group mb-3">
-                <label for="{{ form.descripcion.id_for_label }}">Descripción</label>
-                {{ form.descripcion|add_class:"form-control rounded" }}
+            <form method="POST" enctype="multipart/form-data" class="mt-4">
+                {% csrf_token %}
+
+                <!-- Campo nombre -->
+                <div class="form-group mb-3">
+                    <label for="{{ form.nombre.id_for_label }}">Nombre del Evento</label>
+                    {{ form.nombre|add_class:"form-control rounded" }}
+                    <div class="invalid-feedback">Por favor, ingresa el nombre del evento.</div>
+                </div>
+
+                <!-- Campo descripción -->
+                <div class="form-group mb-3">
+                    <label for="{{ form.descripcion.id_for_label }}">Descripción</label>
+                    {{ form.descripcion|add_class:"form-control rounded" }}
+                </div>
+
+                <!-- Campo fecha del evento -->
+                <div class="form-group mb-3">
+                    <label for="{{ form.fecha_evento.id_for_label }}">Fecha del Evento</label>
+                    {{ form.fecha_evento|add_class:"form-control rounded" }}
+                    <div class="invalid-feedback">Por favor, selecciona la fecha del evento.</div>
+                </div>
+
+                <!-- Campo lugar -->
+                <div class="form-group mb-3">
+                    <label for="{{ form.lugar.id_for_label }}">Lugar del Evento</label>
+                    {{ form.lugar|add_class:"form-control rounded" }}
+                    <div class="invalid-feedback">Por favor, ingresa el lugar del evento.</div>
+                </div>
+
+                <!-- Campo capacidad -->
+                <div class="form-group mb-3">
+                    <label for="{{ form.capacidad.id_for_label }}">Capacidad</label>
+                    {{ form.capacidad|add_class:"form-control rounded" }}
+                    <div class="invalid-feedback">Por favor, ingresa la capacidad del evento.</div>
+                </div>
+
+                <!-- Campo imagen -->
+                <div class="form-group mb-3">
+                    <label for="{{ form.imagen.id_for_label }}">Imagen del Evento</label>
+                    {{ form.imagen|add_class:"form-control rounded" }}
+                </div>
+
+                <!-- Botón de envío -->
+                <button type="submit" class="btn btn-grad-2 w-100 mt-3">Crear Evento</button>
+            </form>
+            {% endif %}
+        </div>
+        <!-- Formulario para añadir entradas -->
+        <div class="col-md-6">
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <h2 class="fw-bold">Añadir Entradas al Evento: 
+                    {% if evento %}
+                        {{ evento.nombre }}
+                    {% else %}
+                        Evento no creado
+                    {% endif %}
+                </h2>
+                <a href="{% url 'mi_empresa' %}" style="cursor: pointer; text-decoration: none; "><button class="btn btn-info shadow rounded text-white">Confirmar</button></a>
             </div>
+            <form method="POST" class="mt-4">
+                {% csrf_token %}
 
-            <!-- Campo fecha del evento con datepicker -->
-            <div class="form-group mb-3">
-                <label for="{{ form.fecha_evento.id_for_label }}">Fecha del Evento</label>
-                {{ form.fecha_evento}}
-                <div class="invalid-feedback">Por favor, selecciona la fecha del evento.</div>
+                <!-- Campo tipo -->
+                <div class="form-group mb-3"> 
+                    <label for="{{ entrada_form.tipo.id_for_label }}">Tipo de Entrada</label>
+                    {% if not evento %}
+                    {{ entrada_form.tipo|add_class:"form-control rounded"|attr:"disabled:true" }}
+                    {% else %}
+                    {{ entrada_form.tipo|add_class:"form-control rounded" }}
+                    {% endif %}
+                </div>
+
+                <!-- Campo precio -->
+                <div class="form-group mb-3">
+                    <label for="{{ entrada_form.precio.id_for_label }}">Precio</label>
+                    {% if not evento %}
+                    {{ entrada_form.precio|add_class:"form-control rounded"|attr:"disabled:true" }}
+                    {% else %}
+                    {{ entrada_form.precio|add_class:"form-control rounded" }}
+                    {% endif %}
+                </div>
+
+                <!-- Campo cantidad disponible -->
+                <div class="form-group mb-3">
+                    <label for="{{ entrada_form.cantidad_disponible.id_for_label }}">Cantidad Disponible</label>
+                    {% if not evento %}
+                    {{ entrada_form.cantidad_disponible|add_class:"form-control rounded"|attr:"disabled:true" }}
+                    {% else %}
+                    {{ entrada_form.cantidad_disponible|add_class:"form-control rounded" }}
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-grad-2 w-100 mt-3 me-5" {% if not evento %}disabled{% endif %}>Añadir
+                    Entrada</button>
+                <hr>
+            </form>
+            <div class="row" style="max-height: 400px;
+    overflow-y: auto;">
+            {% for entrada in entradas %}
+            <div class="col-md-6">
+                <div class="card mb-3 border shadow">
+                    <div class="row g-0">
+                        <div class="col-md-2 d-flex justify-content-center align-items-center">
+                            <i class="fa-solid fa-ticket icon-entrada" style="font-size: 3rem;"></i>
+                        </div>
+                        <div class="col-md-10 border-start">
+                            <div class="card-body">
+                                <div class="row d-flex align-items-center align-items-center">
+                                    <div class="col-md-8">
+                                        <h3 class="card-title fs-4">{{ entrada.tipo }}</h3>
+                                    </div>
+                                    <div class="col-md-4 text-center rounded-pill border align-content-center">
+                                        <h5><i class="fa-solid fa-ticket text-black mx-1 mt-2"></i>{{ entrada.cantidad_disponible }}</h5>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h4>{{ entrada.precio }}€</h4>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="d-flex justify-content-end mt-3">
+                                            <!-- Botón de Editar Evento -->
+                                            <a href="" class="btn btn-dark me-2 shadow rounded text-white"><i class="fa-regular fa-pen-to-square"></i></a>
+                                    
+                                            <!-- Botón de Eliminar Evento -->
+                                            <form action="" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este evento?');">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger shadow rounded"><i class="fa-solid fa-trash"></i></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <!-- Campo lugar -->
-            <div class="form-group mb-3">
-                <label for="{{ form.lugar.id_for_label }}">Lugar del Evento</label>
-                {{ form.lugar|add_class:"form-control rounded" }}
-                <div class="invalid-feedback">Por favor, ingresa el lugar del evento.</div>
+            {% endfor %}      
             </div>
-
-            <!-- Campo capacidad -->
-            <div class="form-group mb-3">
-                <label for="{{ form.capacidad.id_for_label }}">Capacidad</label>
-                {{ form.capacidad|add_class:"form-control rounded" }}
-                <div class="invalid-feedback">Por favor, ingresa la capacidad del evento.</div>
-            </div>
-
-            <!-- Campo imagen -->
-            <div class="form-group mb-3">
-                <label for="{{ form.imagen.id_for_label }}">Imagen del Evento</label>
-                {{ form.imagen|add_class:"form-control rounded" }}
-            </div>
-
-            <!-- Botón de envío -->
-            <button type="submit" class="btn btn-grad-2 w-100 mt-3">Crear Evento</button>
-        </form>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -121,9 +121,15 @@
 
                     <!-- Menú desplegable -->
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="avatarDropdown">
-                        <li>
-                            <a class="dropdown-item" href="{% url 'perfil' %}">Perfil</a>
-                        </li>
+                        {% if user_empresa %}
+                            <li>
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalEmpresa">Perfil de empresa</a>
+                            </li>
+                        {% endif %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'perfil' %}">Perfil</a>
+                            </li>
+                      
                         <li>
                             <a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a>
                         </li>

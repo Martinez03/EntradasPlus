@@ -5,7 +5,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Reseña, Evento, Empresa, Mensaje, Grupo, SolicitudGrupo, MensajeGrupo, PerfilUsuario, MensajeCalendario
+from .models import Reseña, Evento, Empresa, Mensaje, Grupo, SolicitudGrupo, MensajeGrupo, PerfilUsuario, MensajeCalendario, Entrada
 from django.core.exceptions import ValidationError
 from django.contrib.admin.widgets import AdminSplitDateTime
 
@@ -25,6 +25,11 @@ class EditarEventoForm(forms.ModelForm):
     class Meta:
         model = Evento
         fields = ['nombre', 'descripcion', 'fecha_evento', 'lugar', 'capacidad', 'imagen']
+
+class EntradaForm(forms.ModelForm):
+    class Meta:
+        model = Entrada
+        fields = ['tipo', 'precio', 'cantidad_disponible']
 
 # ---------------------------------------------------------
 #                  SECCION FORMULARIO DE EMPRESA

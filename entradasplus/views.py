@@ -12,7 +12,7 @@ from django.db.models import Q
 from datetime import datetime
 
 from .models import Reseña, Entrada, Empresa, Evento, Mensaje, Pedido, Grupo, PerfilUsuario, SolicitudGrupo, MensajeGrupo, MensajeCalendario
-from .forms import ReseñaForm, EventoForm, EmpresaForm, RegisterForm, MensajeForm, PerfilForm, GrupoForm, MensajeGrupoForm, EditarEmpresaForm, EditarEventoForm, MensajeCalendarioForm
+from .forms import ReseñaForm, EventoForm, EmpresaForm, RegisterForm, MensajeForm, PerfilForm, GrupoForm, MensajeGrupoForm, EditarEmpresaForm, EditarEventoForm, MensajeCalendarioForm,EntradaForm
 from .decorators import empresa_verificada_required
 from django.contrib.admin.views.decorators import staff_member_required
 import calendar
@@ -277,16 +277,62 @@ def detalle_empresa(request, empresa_id):
 @empresa_verificada_required
 def crear_evento(request):
     empresa = Empresa.objects.get(usuario=request.user)
+    evento = None
+    entradas = None
+    if 'evento_id' in request.GET:
+        evento = get_object_or_404(Evento, id=request.GET['evento_id'], empresa=empresa)
+
     if request.method == 'POST':
-        form = EventoForm(request.POST, request.FILES)
-        if form.is_valid():
-            evento = form.save(commit=False)
-            evento.empresa = empresa
-            evento.save()
-            return redirect('mi_empresa')
+        if not evento:
+            form = EventoForm(request.POST, request.FILES)
+            if form.is_valid():
+                evento = form.save(commit=False)
+                evento.empresa = empresa
+                evento.save()
+                return redirect(f'{request.path}?evento_id={evento.id}')
+        else:
+            entrada_form = EntradaForm(request.POST)
+            if entrada_form.is_valid():
+                entrada = entrada_form.save(commit=False)
+                entrada.evento = evento
+                entrada.save()
+                if evento:
+                    entradas = evento.entradas.all()
+                return redirect(f'{request.path}?evento_id={evento.id}')
     else:
         form = EventoForm()
-    return render(request, 'crear_evento.html', {'form': form, 'user_empresa': True})
+        entrada_form = EntradaForm()
+    if evento:
+        entradas = evento.entradas.all()
+    return render(request, 'crear_evento.html', {
+        'form': form,
+        'entrada_form': entrada_form,
+        'evento': evento,
+        'user_empresa': True,
+        'entradas': entradas,
+    })
+
+
+def agregar_entradas(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
+
+    if request.method == 'POST':
+        entrada_form = EntradaForm(request.POST)
+        if entrada_form.is_valid():
+            entrada = entrada_form.save(commit=False)
+            entrada.evento = evento
+            entrada.save()
+            return redirect('crear_evento', evento_id=evento.id)  # Redirigir para añadir más entradas o visualizar
+    else:
+        entrada_form = EntradaForm()
+
+    return render(request, 'crear_evento.html', {
+        'form': EventoForm(instance=evento),
+        'entrada_form': entrada_form,
+        'evento': evento,
+        'user_empresa': True
+    })
+
 
 @empresa_verificada_required
 def editar_evento(request, evento_id):

@@ -3,44 +3,61 @@
 {% block content %}
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-4 border p-3 rounded shadow my-1 h-100">
-            <div class="text-center">
-                <h1 class="fw-bold my-2 text-center" >Información de Mi Empresa</h1>
-                <div class="row text-center">
-                    <h5><strong>Nombre:</strong> {{ empresa.nombre }}</h5>
-                    <h5><strong>Descripción:</strong> {{ empresa.descripcion }}</h5>
-                    <h5><strong>Email:</strong> {{ empresa.email }}</h5>
-                    <h5><strong>Teléfono:</strong> {{ empresa.telefono }}</h5>
-                    <h5><strong>Dirección:</strong> {{ empresa.direccion }}</h5>
+        <!-- Modal del toggle de usuario-->
+        <div class="modal fade" id="modalEmpresa" tabindex="-1" aria-labelledby="modalEmpresaLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalEmpresaLabel">Información de Mi Empresa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Contenido de la Empresa -->
+                        <div class="col-md-12">
+                            <div class="text-center">
+                                <h1 class="fw-bold my-2 text-center">Información de Mi Empresa</h1>
+                                <div class="row text-center">
+                                    <h5><strong>Nombre:</strong> {{ empresa.nombre }}</h5>
+                                    <h5><strong>Descripción:</strong> {{ empresa.descripcion }}</h5>
+                                    <h5><strong>Email:</strong> {{ empresa.email }}</h5>
+                                    <h5><strong>Teléfono:</strong> {{ empresa.telefono }}</h5>
+                                    <h5><strong>Dirección:</strong> {{ empresa.direccion }}</h5>
+                                </div>
+
+                                {% if empresa.estado == 'pendiente' %}
+                                    <p class="text-warning">Estado: Pendiente de verificación</p>
+                                {% else %}
+                                    <p class="text-success">Estado: Verificado</p>
+                                {% endif %}
+                                <a href="{% url 'editar_empresa' %}" class="btn btn-primary shadow rounded">Editar Empresa</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
-                {% if empresa.estado == 'pendiente' %}
-                    <p class="text-warning">Estado: Pendiente de verificación</p>
-                {% else %}
-                    <p class="text-success">Estado: Verificado</p>
-                {% endif %}
-                <a href="{% url 'editar_empresa' %}" class="btn btn-primary shadow rounded">Editar Empresa</a>
             </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="text-center">
                 <h1 class="fw-bold my-2 text-center" >Eventos</h1>
                 <a href="{% url 'crear_evento' %}" class="btn btn-info shadow rounded text-white mb-3">Añadir nuevo evento</a>
                 <hr>
                 <div class="row">
                     {% for evento in eventos %}
-                    <div class="col-md-6 mb-2">
-                        <div class="card card-custom shadow h-100" data-bs-toggle="modal" data-bs-target="#modal-{{ evento.id }}">
-                            {% if evento.imagen %}
-                            <img src="{{ evento.imagen.url }}" class="img-fluid img-local card-img-top"
-                            style="width: 100%; height: 20rem; object-fit: cover; object-position: center;" alt="{{ evento.nombre }}">
-                            {% endif %}
-                            <h3 class="card-title mt-3 mx-2 fw-bold">{{ evento.nombre }}</h3>
-                            <hr class="my-3">
-                            <div class="col-md-12 text-center">
-                                <h5><i class="fa-solid fa-location-dot mb-3 text-danger"></i>  {{ evento.lugar }}</h5>
+                    <div class="col-md-4 mb-2">
+                        <a href="{% url 'crear_evento' %}?evento_id={{ evento.id }}" class="text-decoration-none text-black">
+                            <div class="card card-custom shadow h-100">
+                                {% if evento.imagen %}
+                                    <img src="{{ evento.imagen.url }}" class="img-fluid img-local card-img-top"
+                                         style="width: 100%; height: 20rem; object-fit: cover; object-position: center;" 
+                                         alt="{{ evento.nombre }}">
+                                {% endif %}
+                                <h3 class="card-title mt-3 mx-2 fw-bold">{{ evento.nombre }}</h3>
+                                <hr class="my-3">
+                                <div class="col-md-12 text-center">
+                                    <h5><i class="fa-solid fa-location-dot mb-3 text-danger"></i>  {{ evento.lugar }}</h5>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     {% empty %}
                         <li class="list-group-item">No tienes eventos creados.</li>
