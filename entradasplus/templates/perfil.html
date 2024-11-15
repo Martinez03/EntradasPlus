@@ -16,6 +16,7 @@
             <p><strong>Apellidos:</strong> {{ perfil_usuario.apellidos }}</p>
             <p><strong>Descripcion:</strong> {{ perfil_usuario.descripcion}}</p>
             <p><strong>Dinero Disponible:</strong> {{ perfil_usuario.dinero }}€</p>  
+            <p><strong>Puntos Disponibles:</strong> {{ perfil_usuario.puntos }}</p>
             <a href="{% url 'editar_perfil' %}" class="btn btn-primary shadow rounded">Editar Información</a>
             <a href="{% url 'eliminar_cuenta' %}" class="btn btn-danger shadow rounded">Eliminar Cuenta</a>
         </div>

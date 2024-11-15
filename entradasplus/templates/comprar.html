@@ -42,7 +42,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-8">
-                                        <h3 class="card-title ">{{ entrada.tipo }}</h3>
+                                        <h3 class="card-title">{{ entrada.tipo }}</h3>
                                     </div>
                                     {% if request.user.is_authenticated %}
                                         <!-- Formulario de compra para cada entrada -->
@@ -64,7 +64,7 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-8 text-start">
-                                        <h4>{{ entrada.precio }}€</h4>
+                                        <h4>{{ entrada.precio }}€ / {{ entrada.puntos_necesarios }} puntos</h4>
                                     </div>
                                     <div class="col-md-3 text-center rounded-pill border align-content-center">
                                         <h5><i class="fa-solid fa-ticket text-black mx-1 mt-2"></i>{{ entrada.cantidad_disponible }}</h5>
