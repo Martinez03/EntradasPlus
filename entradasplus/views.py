@@ -100,6 +100,9 @@ def day_events_view(request, year, month, day):
     if request.method == "POST":
         form = MensajeCalendarioForm(request.POST)
         if form.is_valid():
+            perfil_usuario = PerfilUsuario.objects.get(user=request.user)
+            perfil_usuario.puntos += 2
+            perfil_usuario.save()
             # Guardar el mensaje solo si el formulario es válido
             MensajeCalendario.objects.create(
                 dia=selected_date.date(),
@@ -513,6 +516,9 @@ def ver_reseñas(request, evento_id):
                 nueva_reseña.empresa = evento.empresa
                 nueva_reseña.usuario = request.user
                 nueva_reseña.save()
+                perfil_usuario = PerfilUsuario.objects.get(user=request.user)
+                perfil_usuario.puntos += 5
+                perfil_usuario.save()
                 return redirect('ver_reseñas', evento_id=evento_id)
         else:
             form = ReseñaForm()
@@ -574,6 +580,9 @@ def detalles_grupo(request, grupo_id):
             mensaje.grupo = grupo
             mensaje.usuario = request.user
             mensaje.save()
+            perfil_usuario = PerfilUsuario.objects.get(user=request.user)
+            perfil_usuario.puntos += 2
+            perfil_usuario.save()
             return redirect('detalles_grupo', grupo_id=grupo.id)
     else:
         # Si el usuario no es miembro y no tiene una solicitud pendiente, mostrar opciones de unirse
