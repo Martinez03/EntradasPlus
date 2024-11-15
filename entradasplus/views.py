@@ -370,26 +370,56 @@ def trending(request):
 def comprar(request, evento_id):
     evento = get_object_or_404(Evento, id=evento_id)
     entradas = evento.entradas.all()
+
+    # Añadir el atributo `puntos_necesarios` a cada entrada
+    for entrada in entradas:
+        entrada.puntos_necesarios = int(entrada.precio) * 10
+
     return render(request, 'comprar.html', {'evento': evento, 'entradas': entradas})
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import Entrada, Evento, PerfilUsuario, Pedido
+
+@login_required
 def comprar_evento(request, evento_id):
     evento = get_object_or_404(Evento, id=evento_id)
     perfil_usuario = PerfilUsuario.objects.get(user=request.user)
+
     if request.method == 'POST':
         entrada_id = request.POST.get('entrada_id')
         cantidad = int(request.POST.get('cantidad', 1))
+        usar_puntos = request.POST.get('usar_puntos') == 'on'
+
         entrada = get_object_or_404(Entrada, id=entrada_id)
         total = cantidad * entrada.precio
-        if cantidad > entrada.cantidad_disponible:
-            messages.error(request, f'Solo quedan {entrada.cantidad_disponible} entradas disponibles.')
-            return redirect('comprar', evento_id=evento.id)
-        if perfil_usuario.dinero < total:
-            messages.error(request, f'No tienes suficiente dinero. Te faltan {total - perfil_usuario.dinero}€.')
-            return redirect('comprar', evento_id=evento.id)
+        puntos_necesarios = cantidad * 100
+
+        if usar_puntos:
+            # Comprar con puntos
+            if perfil_usuario.puntos < puntos_necesarios:
+                messages.error(request, f'No tienes suficientes puntos. Necesitas {puntos_necesarios - perfil_usuario.puntos} puntos más.')
+                return redirect('comprar', evento_id=evento.id)
+
+            perfil_usuario.puntos -= puntos_necesarios
+        else:
+            # Comprar con dinero
+            if cantidad > entrada.cantidad_disponible:
+                messages.error(request, f'Solo quedan {entrada.cantidad_disponible} entradas disponibles.')
+                return redirect('comprar', evento_id=evento.id)
+
+            if perfil_usuario.dinero < total:
+                messages.error(request, f'No tienes suficiente dinero. Te faltan {total - perfil_usuario.dinero}€.')
+                return redirect('comprar', evento_id=evento.id)
+
+            perfil_usuario.dinero -= total
+            perfil_usuario.puntos += int(total * 10)
+
         entrada.cantidad_disponible -= cantidad
-        perfil_usuario.dinero -= total
         entrada.save()
         perfil_usuario.save()
+
         Pedido.objects.create(
             usuario=request.user,
             entrada=entrada,
@@ -399,6 +429,7 @@ def comprar_evento(request, evento_id):
         )
         messages.success(request, '¡Compra realizada con éxito!')
         return redirect('comprar', evento_id=evento.id)
+
     return redirect('comprar', evento_id=evento.id)
 
 @empresa_verificada_required
@@ -412,6 +443,7 @@ def mis_eventos(request):
 #                  SECCION CHAT DE EVENTOS
 # ---------------------------------------------------------
 
+@login_required
 def chat_evento(request, evento_id):
     evento = get_object_or_404(Evento, id=evento_id)
     mensajes = evento.mensajes.order_by('fecha_creacion')
@@ -422,6 +454,12 @@ def chat_evento(request, evento_id):
             mensaje.evento = evento
             mensaje.usuario = request.user
             mensaje.save()
+
+            # Añadir puntos al usuario
+            perfil_usuario = PerfilUsuario.objects.get(user=request.user)
+            perfil_usuario.puntos += 2
+            perfil_usuario.save()
+
             return redirect('chat_evento', evento_id=evento_id)
     else:
         form = MensajeForm()
@@ -444,12 +482,21 @@ def crear_reseña(request, evento_id):
             reseña.empresa = empresa
             reseña.usuario = request.user
             reseña.save()
+
+            # Añadir puntos al usuario
+            perfil_usuario = PerfilUsuario.objects.get(user=request.user)
+            perfil_usuario.puntos += 5
+            perfil_usuario.save()
+
             messages.success(request, '¡Reseña guardada con éxito!')
-            return redirect('detalles_evento', evento_id=evento_id) 
+            return redirect('ver_reseñas', evento_id=evento_id)
     else:
         form = ReseñaForm()
 
-    return render(request, 'crear_reseña.html', {'form': form, 'evento': evento})
+    return render(request, 'reseñas.html', {
+        'evento': evento,
+        'form': form,
+    })
 
 def ver_reseñas(request, evento_id):
     evento = get_object_or_404(Evento, id=evento_id)
@@ -485,6 +532,7 @@ def crear_grupo(request):
     if Grupo.objects.filter(admin=request.user).count() >= 3:
         messages.warning(request, 'Has alcanzado el límite de 3 grupos.')
         return redirect('lista_grupos')
+
     if request.method == 'POST':
         form = GrupoForm(request.POST, request.FILES)
         if form.is_valid():
@@ -492,6 +540,12 @@ def crear_grupo(request):
             grupo.admin = request.user
             grupo.save()
             grupo.usuarios.add(request.user)
+
+            # Añadir puntos al usuario
+            perfil_usuario = PerfilUsuario.objects.get(user=request.user)
+            perfil_usuario.puntos += 20
+            perfil_usuario.save()
+
             return redirect('lista_grupos')
     else:
         form = GrupoForm()
