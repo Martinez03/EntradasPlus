@@ -56,6 +56,8 @@ urlpatterns = [
     path('eventos/<int:evento_id>/eliminar/', views.eliminar_evento, name='eliminar_evento'),
     path('eventos/<int:evento_id>/compradores/', views.compradores_evento, name='compradores_evento'),
     path('eventos/mis_eventos/', views.mis_eventos, name='mis_eventos'),
+    path('eventos/eliminar_entrada/<int:evento_id>/<int:entrada_id>/', views.eliminar_entrada, name='eliminar_entrada'),
+    path('eventos/editar_entrada/<int:evento_id>/<int:entrada_id>/', views.editar_entrada, name='editar_entrada'),
 
     # -----------------------------------------------------
     #                      SECCION GRUPOS

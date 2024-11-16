@@ -133,8 +133,7 @@
                     Entrada</button>
                 <hr>
             </form>
-            <div class="row" style="max-height: 400px;
-    overflow-y: auto;">
+            <div class="row" style="max-height: 400px; overflow-y: auto;">
             {% for entrada in entradas %}
             <div class="col-md-6">
                 <div class="card mb-3 border shadow">
@@ -159,11 +158,31 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="d-flex justify-content-end mt-3">
-                                            <!-- Botón de Editar Evento -->
-                                            <a href="" class="btn btn-dark me-2 shadow rounded text-white"><i class="fa-regular fa-pen-to-square"></i></a>
-                                    
-                                            <!-- Botón de Eliminar Evento -->
-                                            <form action="" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este evento?');">
+                                            
+                                            <!-- <a href="#" class="btn btn-dark me-2 shadow rounded text-white" data-bs-toggle="modal" data-bs-target="#editModal{{ entrada.id }}">
+                                                <i class="fa-regular fa-pen-to-square"></i>
+                                            </a>
+                                            <div class="modal fade" id="editModal{{ entrada.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ entrada.id }}" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="editModalLabel{{ entrada.id }}">Editar Entrada</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <form action="{% url 'editar_entrada' evento.id entrada.id %}" method="POST">
+                                                            {% csrf_token %}
+                                                            <div class="modal-body">
+                                                                {{ form.as_p }}
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+                                            <form action="{% url 'eliminar_entrada' evento.id entrada.id %}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta entrada?');">
                                                 {% csrf_token %}
                                                 <button type="submit" class="btn btn-danger shadow rounded"><i class="fa-solid fa-trash"></i></button>
                                             </form>
@@ -175,8 +194,30 @@
                     </div>
                 </div>
             </div>
-            {% endfor %}      
-            </div>
+            {% endfor %}
+           <!-- Modal editar entrada  -->
+           {% if entrada.id %}
+            <div class="modal fade" id="editModal{{ entrada.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ entrada.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalLabel{{ entrada.id }}">Editar Entrada</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{% url 'editar_entrada' evento.id entrada.id %}" method="POST">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                {{ form.as_p }}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div> 
+            {% endif %}
         </div>
     </div>
 </div>

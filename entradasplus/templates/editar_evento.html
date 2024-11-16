@@ -1,12 +1,56 @@
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
 {% block content %}
-<div class="container">
-    <h2>Editar Evento</h2>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-    </form>
+{% load widget_tweaks %}
+<div class="container mt-5">
+    <div class="container d-flex justify-content-center">
+        <div class="col-md-6">
+            <h2 class="text-center fw-bold">Editar evento</h2>
+            <form method="POST" enctype="multipart/form-data" class="mt-3">
+                {% csrf_token %}
+
+                <div class="form-group mb-3">
+                    <label for="{{ form.nombre.id_for_label }}">Nombre del Evento</label>
+                    {{ form.nombre|add_class:"form-control rounded" }}
+                    <div class="invalid-feedback">Por favor, ingresa el nombre del evento.</div>
+                </div>
+
+                <!-- Campo descripción -->
+                <div class="form-group mb-3">
+                    <label for="{{ form.descripcion.id_for_label }}">Descripción</label>
+                    {{ form.descripcion|add_class:"form-control rounded" }}
+                </div>
+
+                <!-- Campo fecha del evento -->
+                <div class="form-group mb-3">
+                    <label for="{{ form.fecha_evento.id_for_label }}">Fecha del Evento</label>
+                    {{ form.fecha_evento|add_class:"form-control rounded" }}
+                    <div class="invalid-feedback">Por favor, selecciona la fecha del evento.</div>
+                </div>
+
+                <!-- Campo lugar -->
+                <div class="form-group mb-3">
+                    <label for="{{ form.lugar.id_for_label }}">Lugar del Evento</label>
+                    {{ form.lugar|add_class:"form-control rounded" }}
+                    <div class="invalid-feedback">Por favor, ingresa el lugar del evento.</div>
+                </div>
+
+                <!-- Campo capacidad -->
+                <div class="form-group mb-3">
+                    <label for="{{ form.capacidad.id_for_label }}">Capacidad</label>
+                    {{ form.capacidad|add_class:"form-control rounded" }}
+                    <div class="invalid-feedback">Por favor, ingresa la capacidad del evento.</div>
+                </div>
+
+                <!-- Campo imagen -->
+                <div class="form-group mb-3">
+                    <label for="{{ form.imagen.id_for_label }}">Imagen del Evento</label>
+                    {{ form.imagen|add_class:"form-control rounded" }}
+                </div>
+                
+                <button type="submit" class="btn btn-primary shadow rounded mb-5">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
+

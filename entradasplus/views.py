@@ -301,6 +301,7 @@ def crear_evento(request):
                 entrada.save()
                 if evento:
                     entradas = evento.entradas.all()
+                print(request.path)
                 return redirect(f'{request.path}?evento_id={evento.id}')
     else:
         form = EventoForm()
@@ -316,25 +317,27 @@ def crear_evento(request):
     })
 
 
-def agregar_entradas(request, evento_id):
+@empresa_verificada_required
+def eliminar_entrada(request, evento_id,entrada_id):
+    print(f"Intentando eliminar entrada: evento_id={evento_id}, entrada_id={entrada_id}")
     evento = get_object_or_404(Evento, id=evento_id)
-
+    entrada = get_object_or_404(Entrada, id=entrada_id)
     if request.method == 'POST':
-        entrada_form = EntradaForm(request.POST)
-        if entrada_form.is_valid():
-            entrada = entrada_form.save(commit=False)
-            entrada.evento = evento
-            entrada.save()
-            return redirect('crear_evento', evento_id=evento.id)  # Redirigir para añadir más entradas o visualizar
-    else:
-        entrada_form = EntradaForm()
-
-    return render(request, 'crear_evento.html', {
-        'form': EventoForm(instance=evento),
-        'entrada_form': entrada_form,
-        'evento': evento,
-        'user_empresa': True
-    })
+        entrada.delete()
+        messages.success(request, 'Entrada eliminada exitosamente.')
+        return redirect(f'/eventos/crear/?evento_id={evento.id}')
+    
+@empresa_verificada_required
+def editar_entrada(request, evento_id,entrada_id):
+    print(f"Intentando ediatr entrada: evento_id={evento_id}, entrada_id={entrada_id}")
+    evento = get_object_or_404(Evento, id=evento_id)
+    entrada = get_object_or_404(Entrada, id=entrada_id)
+    if request.method == 'POST':
+        form = EntradaForm(request.POST, instance=entrada)
+        if form.is_valid():
+            form.save()
+            return redirect(f'/eventos/crear/?evento_id={evento.id}')
+    return redirect(f'/eventos/crear/?evento_id={evento.id}')
 
 
 @empresa_verificada_required
@@ -345,19 +348,20 @@ def editar_evento(request, evento_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Evento actualizado exitosamente.')
-            return redirect('mis_eventos')
+            return redirect(f'/eventos/crear/?evento_id={evento.id}')
     else:
         form = EditarEventoForm(instance=evento)
-    return render(request, 'events/editar_evento.html', {'form': form, 'evento': evento})
+    return render(request, 'editar_evento.html', {'form': form, 'evento': evento, 'user_empresa' : True})
 
 @empresa_verificada_required
 def eliminar_evento(request, evento_id):
     evento = get_object_or_404(Evento, id=evento_id, empresa__usuario=request.user)
+    user_empresa = True
     if request.method == 'POST':
         evento.delete()
         messages.success(request, 'Evento eliminado exitosamente.')
-        return redirect('mis_eventos')
-    return render(request, 'events/confirmar_eliminar_evento.html', {'evento': evento})
+        return redirect('mi_empresa')
+    return redirect('mi_empresa')
 
 @empresa_verificada_required
 def compradores_evento(request, evento_id):
