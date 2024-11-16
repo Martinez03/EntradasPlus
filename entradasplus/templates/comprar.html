@@ -53,6 +53,12 @@
                                                 <input type="number" name="cantidad" min="1" max="{{ entrada.cantidad_disponible }}" value="1" class="form-control mb-2">
                                                 <button type="submit" class="btn btn-info ms-1 text-white shadow">Comprar</button>
                                             </form>
+                                            <form method="post" action="{% url 'canjear_evento' evento.id %}" class="mt-2">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="entrada_id" value="{{ entrada.id }}">
+                                                <input type="number" name="cantidad" min="1" max="{{ entrada.cantidad_disponible }}" value="1" class="form-control mb-2">
+                                                <button type="submit" class="btn btn-warning ms-1 text-white shadow">Canjear</button>
+                                            </form>
                                         </div>
                                     {% else %}
                                         <!-- Botón que abre el modal de inicio de sesión -->
