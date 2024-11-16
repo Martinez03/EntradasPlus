@@ -49,6 +49,7 @@ class Entrada(models.Model):
     evento = models.ForeignKey(Evento, on_delete=models.CASCADE, related_name='entradas')
     tipo = models.CharField(max_length=50)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
+    puntos_necesarios = models.IntegerField(default=0) 
     cantidad_disponible = models.IntegerField()
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
@@ -61,7 +62,7 @@ class Pedido(models.Model):
     cantidad = models.IntegerField()
     fecha_compra = models.DateTimeField(auto_now_add=True)
     total = models.DecimalField(max_digits=10, decimal_places=2)
-
+    puntos_usados = models.IntegerField(default=0)
     def __str__(self):
         return f'Pedido de {self.usuario.username} - {self.entrada.evento.nombre}'
 

@@ -50,7 +50,7 @@ urlpatterns = [
     # -----------------------------------------------------
     path('comprar/<int:evento_id>/', views.comprar, name='comprar'),  # Selección de entradas
     path('comprar_evento/<int:evento_id>/', views.comprar_evento, name='comprar_evento'),  # Confirmación de compra
-    path('evento/<int:evento_id>/chat/', views.chat_evento, name='chat_evento'),
+    path('canjear/<int:evento_id>/', views.cangear_puntos, name='canjear_evento'),    path('evento/<int:evento_id>/chat/', views.chat_evento, name='chat_evento'),
     path('eventos/crear/', views.crear_evento, name='crear_evento'),
     path('eventos/<int:evento_id>/editar/', views.editar_evento, name='editar_evento'),
     path('eventos/<int:evento_id>/eliminar/', views.eliminar_evento, name='eliminar_evento'),

@@ -401,28 +401,17 @@ def comprar_evento(request, evento_id):
 
         entrada = get_object_or_404(Entrada, id=entrada_id)
         total = cantidad * entrada.precio
-        puntos_necesarios = cantidad * 100
+        
+        if cantidad > entrada.cantidad_disponible:
+            messages.error(request, f'Solo quedan {entrada.cantidad_disponible} entradas disponibles.')
+            return redirect('comprar', evento_id=evento.id)
 
-        if usar_puntos:
-            # Comprar con puntos
-            if perfil_usuario.puntos < puntos_necesarios:
-                messages.error(request, f'No tienes suficientes puntos. Necesitas {puntos_necesarios - perfil_usuario.puntos} puntos más.')
-                return redirect('comprar', evento_id=evento.id)
+        if perfil_usuario.dinero < total:
+            messages.error(request, f'No tienes suficiente dinero. Te faltan {total - perfil_usuario.dinero}€.')
+            return redirect('comprar', evento_id=evento.id)
 
-            perfil_usuario.puntos -= puntos_necesarios
-        else:
-            # Comprar con dinero
-            if cantidad > entrada.cantidad_disponible:
-                messages.error(request, f'Solo quedan {entrada.cantidad_disponible} entradas disponibles.')
-                return redirect('comprar', evento_id=evento.id)
-
-            if perfil_usuario.dinero < total:
-                messages.error(request, f'No tienes suficiente dinero. Te faltan {total - perfil_usuario.dinero}€.')
-                return redirect('comprar', evento_id=evento.id)
-
-            perfil_usuario.dinero -= total
-            perfil_usuario.puntos += int(total * 10)
-
+        perfil_usuario.dinero -= total
+        perfil_usuario.puntos += int(total * 10)
         entrada.cantidad_disponible -= cantidad
         entrada.save()
         perfil_usuario.save()
@@ -438,6 +427,59 @@ def comprar_evento(request, evento_id):
         return redirect('comprar', evento_id=evento.id)
 
     return redirect('comprar', evento_id=evento.id)
+
+@login_required
+def cangear_puntos(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
+    perfil_usuario = PerfilUsuario.objects.get(user=request.user)
+
+    if request.method == 'POST':
+        print(f"Usuario: {request.user.username}, Evento ID: {evento_id}")
+        entrada_id = request.POST.get('entrada_id')
+        print(f"Entrada ID: {entrada_id}")
+        cantidad = int(request.POST.get('cantidad', 1))
+        print(f"Cantidad solicitada: {cantidad}")
+
+        entrada = get_object_or_404(Entrada, id=entrada_id)
+        puntos_necesarios = cantidad * 100
+        print(f"Puntos necesarios: {puntos_necesarios}, Puntos disponibles: {perfil_usuario.puntos}")
+
+        # Verificar si hay suficientes entradas disponibles
+        if cantidad > entrada.cantidad_disponible:
+            print(f"Error: Solo quedan {entrada.cantidad_disponible} entradas disponibles.")
+            messages.error(request, f'Solo quedan {entrada.cantidad_disponible} entradas disponibles.')
+            return redirect('comprar', evento_id=evento.id)
+
+        # Verificar si el usuario tiene suficientes puntos
+        if perfil_usuario.puntos < puntos_necesarios:
+            print(f"Error: Puntos insuficientes. Faltan {puntos_necesarios - perfil_usuario.puntos} puntos.")
+            messages.error(request, f'No tienes suficientes puntos. Necesitas {puntos_necesarios - perfil_usuario.puntos} puntos más.')
+            return redirect('comprar', evento_id=evento.id)
+
+        # Si pasa las validaciones, se realiza el canje
+        print("Validaciones superadas. Procesando canje...")
+        perfil_usuario.puntos -= puntos_necesarios
+        entrada.cantidad_disponible -= cantidad
+        entrada.save()
+        perfil_usuario.save()
+        print(f"Canje realizado: {cantidad} entradas, {puntos_necesarios} puntos usados.")
+
+        Pedido.objects.create(
+            usuario=request.user,
+            entrada=entrada,
+            cantidad=cantidad,
+            fecha_compra=timezone.now(),
+            total=0,  # Total en dinero es 0 porque se canjearon puntos
+            puntos_usados=puntos_necesarios
+        )
+
+        messages.success(request, '¡Puntos canjeados con éxito!')
+        return redirect('comprar', evento_id=evento.id)
+
+    print("No es una solicitud POST. Redirigiendo...")
+    return redirect('comprar', evento_id=evento.id)
+
+
 
 @empresa_verificada_required
 def mis_eventos(request):
