@@ -21,7 +21,4 @@ Es altamente recomendable usar un entorno virtual para evitar conflictos entre d
 python3 -m venv venv
 source venv/bin/activate
 
-### 2.Instalar dependencias
-
-Es altamente recomendable usar un entorno virtual para evitar conflictos entre dependencias. Para crear y activar un entorno virtual, sigue estos pasos:
-
+###2. 
