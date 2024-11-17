@@ -372,6 +372,9 @@ def compradores_evento(request, evento_id):
 
 def trending(request):
     eventos = Evento.objects.all()
+    query = request.GET.get('q')
+    if query:
+        eventos = eventos.filter(nombre__icontains=query)
     return render(request, 'trending.html', {'eventos': eventos})
 
 def comprar(request, evento_id):

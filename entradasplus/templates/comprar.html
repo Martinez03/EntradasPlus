@@ -41,23 +41,24 @@
                         <div class="col-md-10 border-start">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-8">
+                                    <div class="col-md-6">
                                         <h3 class="card-title">{{ entrada.tipo }}</h3>
                                     </div>
                                     {% if request.user.is_authenticated %}
-                                        <!-- Formulario de compra para cada entrada -->
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <form method="post" action="{% url 'comprar_evento' evento.id %}">
                                                 {% csrf_token %}
                                                 <input type="hidden" name="entrada_id" value="{{ entrada.id }}">
                                                 <input type="number" name="cantidad" min="1" max="{{ entrada.cantidad_disponible }}" value="1" class="form-control mb-2">
                                                 <button type="submit" class="btn btn-info ms-1 text-white shadow">Comprar</button>
                                             </form>
-                                            <form method="post" action="{% url 'canjear_evento' evento.id %}" class="mt-2">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <form method="post" action="{% url 'canjear_evento' evento.id %}">
                                                 {% csrf_token %}
                                                 <input type="hidden" name="entrada_id" value="{{ entrada.id }}">
                                                 <input type="number" name="cantidad" min="1" max="{{ entrada.cantidad_disponible }}" value="1" class="form-control mb-2">
-                                                <button type="submit" class="btn btn-warning ms-1 text-white shadow">Canjear</button>
+                                                <button type="submit" class="btn btn-warning text-white shadow">Canjear</button>
                                             </form>
                                         </div>
                                     {% else %}
@@ -69,7 +70,7 @@
                                 </div>
                                 <hr>
                                 <div class="row">
-                                    <div class="col-md-8 text-start">
+                                    <div class="col-md-8">
                                         <h4>{{ entrada.precio }}€ / {{ entrada.puntos_necesarios }} puntos</h4>
                                     </div>
                                     <div class="col-md-3 text-center rounded-pill border align-content-center">

@@ -22,10 +22,9 @@
                     
                     <!-- Botones de editar y eliminar -->
                     <div class="d-flex justify-content-end mt-3">
-                        <!-- Botón de Editar Evento -->
+                        
                         <a href="{% url 'editar_evento' evento.id %}" class="btn btn-dark me-2 shadow rounded text-white">Editar Evento</a>
-                
-                        <!-- Botón de Eliminar Evento -->
+
                         <form action="{% url 'eliminar_evento' evento.id %}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este evento?');">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger shadow rounded">Eliminar Evento</button>

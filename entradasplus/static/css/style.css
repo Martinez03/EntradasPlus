@@ -148,6 +148,7 @@ flex-grow: 1;
 
 .li-calendar.today time {
     font-weight: 800;
+    color:white;
     background: linear-gradient(to right, #cbcee3, #dcb7d6);
 }
 .li-calendar.today {
@@ -176,12 +177,10 @@ flex-grow: 1;
     background: white;
     background: rgba(255, 255, 255, 0.8);
     background-size: cover;
-    /* Asegura que el fondo se estire */
     background-position: center;
-    /* Centra la imagen */
     background-repeat: no-repeat;
     position: absolute;
-    top: 11%;
+    
     z-index: -50;
     height: 450px;
     width: 100%;
