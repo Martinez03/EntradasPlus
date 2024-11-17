@@ -33,6 +33,7 @@ Con el entorno virtual activado, instala las dependencias necesarias ejecutando:
 
 ```bash
 pip install -r requirements.txt
+pip install --upgrade PyJWT
 ```
 
 ### 4. Ejecutar la aplicación
