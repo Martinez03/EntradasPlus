@@ -65,7 +65,7 @@ def calendar_view(request, year=None, month=None):
     days_with_events = [
         {
             "day": day,
-            "event": eventos_por_dia.get(day, ""),  # Primer evento o vacío
+            "event": eventos_por_dia.get(day, ""), 
             "is_today": (day == current_day) if day != 0 else False,
             "is_empty": (day == 0)
         }
@@ -109,7 +109,7 @@ def day_events_view(request, year, month, day):
                 usuario=request.user,
                 contenido=form.cleaned_data['contenido']
             )
-            return redirect('day_events_view', year=year, month=month, day=day)  # Redirigir para evitar reenvío del formulario
+            return redirect('day_events_view', year=year, month=month, day=day)  
 
     else:
         form = MensajeCalendarioForm()
@@ -118,7 +118,7 @@ def day_events_view(request, year, month, day):
         "eventos": eventos_del_dia,
         "selected_date": selected_date.strftime("%d de %B de %Y"),
         "mensajes": mensajes_del_dia,
-        "form": form,  # Pasar el formulario al template
+        "form": form, 
     })
 
 
@@ -127,7 +127,7 @@ from django.db.models import Avg
 def colaboradores(request):
     empresas = Empresa.objects.filter(estado='verificada')
 
-    # Añadir valoración media a cada empresa
+   
     for empresa in empresas:
         empresa.valoracion_media = empresa.reseñas.aggregate(Avg('calificacion'))['calificacion__avg']
 
@@ -167,13 +167,13 @@ def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()  # Guardar el usuario
+            user = form.save()  
             messages.success(request, '¡Registro exitoso! Has iniciado sesión automáticamente.')
 
             # Especificar el backend explícitamente
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, user)
-            return redirect('/')  # Cambia '/' a la página que desees mostrar después del login
+            return redirect('/') 
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -262,7 +262,7 @@ def detalle_empresa(request, empresa_id):
     eventos = Evento.objects.filter(empresa=empresa)
     reseñas = Reseña.objects.filter(empresa=empresa).select_related('evento', 'usuario')
 
-    # Calcular la valoración media de la empresa
+    
     valoracion_media = reseñas.aggregate(Avg('calificacion'))['calificacion__avg']
 
     return render(request, 'detalle_empresa.html', {
@@ -381,7 +381,7 @@ def comprar(request, evento_id):
     evento = get_object_or_404(Evento, id=evento_id)
     entradas = evento.entradas.all()
 
-    # Añadir el atributo `puntos_necesarios` a cada entrada
+   
     for entrada in entradas:
         entrada.puntos_necesarios = int(entrada.precio) * 10
 
@@ -437,50 +437,38 @@ def cangear_puntos(request, evento_id):
     perfil_usuario = PerfilUsuario.objects.get(user=request.user)
 
     if request.method == 'POST':
-        print(f"Usuario: {request.user.username}, Evento ID: {evento_id}")
         entrada_id = request.POST.get('entrada_id')
-        print(f"Entrada ID: {entrada_id}")
         cantidad = int(request.POST.get('cantidad', 1))
-        print(f"Cantidad solicitada: {cantidad}")
 
         entrada = get_object_or_404(Entrada, id=entrada_id)
-        puntos_necesarios = cantidad * 100
-        print(f"Puntos necesarios: {puntos_necesarios}, Puntos disponibles: {perfil_usuario.puntos}")
+        puntos_necesarios = cantidad * entrada.precio * 10  
 
-        # Verificar si hay suficientes entradas disponibles
         if cantidad > entrada.cantidad_disponible:
-            print(f"Error: Solo quedan {entrada.cantidad_disponible} entradas disponibles.")
             messages.error(request, f'Solo quedan {entrada.cantidad_disponible} entradas disponibles.')
             return redirect('comprar', evento_id=evento.id)
 
-        # Verificar si el usuario tiene suficientes puntos
         if perfil_usuario.puntos < puntos_necesarios:
-            print(f"Error: Puntos insuficientes. Faltan {puntos_necesarios - perfil_usuario.puntos} puntos.")
             messages.error(request, f'No tienes suficientes puntos. Necesitas {puntos_necesarios - perfil_usuario.puntos} puntos más.')
             return redirect('comprar', evento_id=evento.id)
 
-        # Si pasa las validaciones, se realiza el canje
-        print("Validaciones superadas. Procesando canje...")
         perfil_usuario.puntos -= puntos_necesarios
         entrada.cantidad_disponible -= cantidad
         entrada.save()
         perfil_usuario.save()
-        print(f"Canje realizado: {cantidad} entradas, {puntos_necesarios} puntos usados.")
 
         Pedido.objects.create(
             usuario=request.user,
             entrada=entrada,
             cantidad=cantidad,
             fecha_compra=timezone.now(),
-            total=0,  # Total en dinero es 0 porque se canjearon puntos
+            total=0,  
             puntos_usados=puntos_necesarios
         )
 
         messages.success(request, '¡Puntos canjeados con éxito!')
         return redirect('comprar', evento_id=evento.id)
 
-    print("No es una solicitud POST. Redirigiendo...")
-    return redirect('comprar', evento_id=evento.id)
+    return redirect('comprar', evento_id=evento_id)
 
 
 
@@ -635,8 +623,8 @@ def detalles_grupo(request, grupo_id):
             return redirect('detalles_grupo', grupo_id=grupo.id)
     else:
         # Si el usuario no es miembro y no tiene una solicitud pendiente, mostrar opciones de unirse
-        mensajes = None  # No mostrar mensajes si no está en el grupo
-        form = None  # No mostrar formulario de mensaje si no está en el grupo
+        mensajes = None  
+        form = None  
     
     return render(request, 'detalles_grupo.html', {
         'grupo': grupo,
