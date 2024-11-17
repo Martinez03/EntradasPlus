@@ -104,11 +104,11 @@
                 </script>
                 {% endif %}
                 <div class="col-md-2 d-flex justify-content-end">
-                    <!-- Verificar si el usuario está autenticado -->
+                    
                     {% if user.is_authenticated %}
-                    <!-- Si un usuario está autenticado, mostrar "Cerrar sesión" para usuario -->
+                    
                     <div class="dropdown">
-                        <!-- Imagen del avatar que actúa como botón para desplegar el menú -->
+                        
                         {% if user.perfilusuario.avatar %}
                         <img src="{{ user.perfilusuario.avatar.url }}" class="rounded-circle shadow dropdown-toggle"
                             style="width: 50px; cursor: pointer;" alt="Avatar" id="avatarDropdown"
@@ -119,7 +119,7 @@
                             data-bs-toggle="dropdown" aria-expanded="false">
                         {% endif %}
 
-                        <!-- Menú desplegable -->
+                        
                         <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="avatarDropdown">
                             {% if user_empresa %}
                             <li>
@@ -138,12 +138,12 @@
 
                     </div>
                     {% elif request.session.empresa_id %}
-                    <!-- Si una empresa está autenticada, mostrar "Cerrar sesión" para empresa -->
+                    
                     <a href="{% url 'logout_empresa' %}" class="btn btn-grad-logout btn-login shadow">
                         <i class="bi bi-box-arrow-right"></i> Cerrar sesión
                     </a>
                     {% else %}
-                    <!-- Si nadie está autenticado, mostrar ambos botones de inicio de sesión -->
+                    
                     <button class="btn btn-grad btn-login shadow me-2" data-bs-toggle="modal"
                         data-bs-target="#loginModal">
                         <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión

@@ -4,7 +4,7 @@
 <div class="container">
     <h2 class="text-center mt-3 fw-bold">Chat para {{ evento.nombre }}</h2>
 
-    <!-- Área de mensajes -->
+    
     <div id="chat-mensajes" class="border p-3 rounded mb-3" style="height: 400px; overflow-y: auto;">
         {% for mensaje in mensajes %}
         <div class="mb-2 border {% if mensaje.usuario == user %}text-end{% else %}text-start{% endif %}">

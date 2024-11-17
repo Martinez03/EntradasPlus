@@ -11,5 +11,5 @@ admin.site.register(MensajeCalendario)
 
 @admin.register(Empresa)
 class EmpresaAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'email', 'estado')  # Mostrar estos campos en el admin
-    list_filter = ('estado',)  # Filtrar por estado
+    list_display = ('nombre', 'email', 'estado')  
+    list_filter = ('estado',)  

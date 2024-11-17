@@ -6,9 +6,9 @@
             <a href="{% url 'calendar' prev_year prev_month %}" class="text-decoration-none">
                 <i class="fa-solid fa-arrow-left fa-4x text-dark"></i>
             </a>
-            <h1 class="fw-bold mx-5">{{ month_name }} {{ year }}</h1> <!-- Usé mb-0 para eliminar margen inferior -->
+            <h1 class="fw-bold mx-5">{{ month_name }} {{ year }}</h1> 
             <a href="{% url 'calendar' next_year next_month %}" class="text-decoration-none">
-                <i class="fa-solid fa-arrow-right fa-4x text-dark"></i> <!-- Cambié el color a text-dark y el tamaño a fa-3x -->
+                <i class="fa-solid fa-arrow-right fa-4x text-dark"></i> 
             </a>
         </div>        
         <ul class="ul-calendar">

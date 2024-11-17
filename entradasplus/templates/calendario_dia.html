@@ -99,6 +99,7 @@
                     <p class="text-muted text-center">No hay mensajes en el chat. ¡Sé el primero en comentar!</p>
                 {% endfor %}
             </div>
+            {% if request.user.is_authenticated %}
             <form method="POST" class="mt-3">
                 {% csrf_token %}
                 <div class="input-group">
@@ -107,6 +108,16 @@
                                 shadow ronded ms-2"><i class="fa-regular fa-paper-plane"></i></button>
                 </div>
             </form>
+            {% else %}
+            <div class="mt-3">
+                {% csrf_token %}
+                <div class="input-group">
+                    <textarea name="contenido" class="form-control" rows="2" placeholder="Escribe un mensaje..."></textarea>
+                    <button data-bs-toggle="modal" data-bs-target="#loginModal" type="submit" class="btn btn-info text-white
+                                shadow ronded ms-2"><i class="fa-regular fa-paper-plane"></i></button>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

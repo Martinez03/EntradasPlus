@@ -3,16 +3,16 @@
 {% load widget_tweaks %}
 <div class="container-fluid">
     <div class="row">
-        <!-- Formulario para crear evento -->
+        
         <div class="col-md-6">
             {% if evento %}
-            <!-- Información del Evento en una Card -->
+            
             <div class="card mt-3 shadow">
-                <!-- Imagen del Evento -->
+                
                 <img src="{{ evento.imagen.url }}" class="card-img-top img-fluid" s
                     tyle="width: 100%; object-fit: cover; height: 30rem;" alt="Imagen del evento">
 
-                <!-- Cuerpo de la Card -->
+                
                 <div class="card-body">
                     <h2 class="card-title text-center fw-bold">{{ evento.nombre }}</h2>
                     <p class="card-text"><strong>Descripción:</strong> {{ evento.descripcion }}</p>
@@ -20,7 +20,7 @@
                     <p class="card-text"><strong>Lugar:</strong> {{ evento.lugar }}</p>
                     <p class="card-text"><strong>Capacidad:</strong> {{ evento.capacidad }}</p>
                     
-                    <!-- Botones de editar y eliminar -->
+                    
                     <div class="d-flex justify-content-end mt-3">
                         
                         <a href="{% url 'editar_evento' evento.id %}" class="btn btn-dark me-2 shadow rounded text-white">Editar Evento</a>
@@ -33,53 +33,51 @@
                 </div>
             </div>
             {% else %}
-            <!-- Formulario de Creación de Evento -->
+            
             <h2 class="text-center mt-3 fw-bold">Crear Nuevo Evento</h2>
 
             <form method="POST" enctype="multipart/form-data" class="mt-4">
                 {% csrf_token %}
 
-                <!-- Campo nombre -->
+                
                 <div class="form-group mb-3">
                     <label for="{{ form.nombre.id_for_label }}">Nombre del Evento</label>
                     {{ form.nombre|add_class:"form-control rounded" }}
                     <div class="invalid-feedback">Por favor, ingresa el nombre del evento.</div>
                 </div>
 
-                <!-- Campo descripción -->
+                
                 <div class="form-group mb-3">
                     <label for="{{ form.descripcion.id_for_label }}">Descripción</label>
                     {{ form.descripcion|add_class:"form-control rounded" }}
                 </div>
 
-                <!-- Campo fecha del evento -->
+           
                 <div class="form-group mb-3">
                     <label for="{{ form.fecha_evento.id_for_label }}">Fecha del Evento</label>
                     {{ form.fecha_evento|add_class:"form-control rounded" }}
                     <div class="invalid-feedback">Por favor, selecciona la fecha del evento.</div>
                 </div>
 
-                <!-- Campo lugar -->
                 <div class="form-group mb-3">
                     <label for="{{ form.lugar.id_for_label }}">Lugar del Evento</label>
                     {{ form.lugar|add_class:"form-control rounded" }}
                     <div class="invalid-feedback">Por favor, ingresa el lugar del evento.</div>
                 </div>
 
-                <!-- Campo capacidad -->
+                
                 <div class="form-group mb-3">
                     <label for="{{ form.capacidad.id_for_label }}">Capacidad</label>
                     {{ form.capacidad|add_class:"form-control rounded" }}
                     <div class="invalid-feedback">Por favor, ingresa la capacidad del evento.</div>
                 </div>
 
-                <!-- Campo imagen -->
+                
                 <div class="form-group mb-3">
                     <label for="{{ form.imagen.id_for_label }}">Imagen del Evento</label>
                     {{ form.imagen|add_class:"form-control rounded" }}
                 </div>
 
-                <!-- Botón de envío -->
                 <button type="submit" class="btn btn-grad-2 w-100 mt-3">Crear Evento</button>
             </form>
             {% endif %}
@@ -99,7 +97,7 @@
             <form method="POST" class="mt-4">
                 {% csrf_token %}
 
-                <!-- Campo tipo -->
+                
                 <div class="form-group mb-3"> 
                     <label for="{{ entrada_form.tipo.id_for_label }}">Tipo de Entrada</label>
                     {% if not evento %}
@@ -109,7 +107,7 @@
                     {% endif %}
                 </div>
 
-                <!-- Campo precio -->
+                
                 <div class="form-group mb-3">
                     <label for="{{ entrada_form.precio.id_for_label }}">Precio</label>
                     {% if not evento %}
@@ -119,7 +117,7 @@
                     {% endif %}
                 </div>
 
-                <!-- Campo cantidad disponible -->
+                
                 <div class="form-group mb-3">
                     <label for="{{ entrada_form.cantidad_disponible.id_for_label }}">Cantidad Disponible</label>
                     {% if not evento %}
@@ -158,29 +156,6 @@
                                     <div class="col-md-4">
                                         <div class="d-flex justify-content-end mt-3">
                                             
-                                            <!-- <a href="#" class="btn btn-dark me-2 shadow rounded text-white" data-bs-toggle="modal" data-bs-target="#editModal{{ entrada.id }}">
-                                                <i class="fa-regular fa-pen-to-square"></i>
-                                            </a>
-                                            <div class="modal fade" id="editModal{{ entrada.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ entrada.id }}" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="editModalLabel{{ entrada.id }}">Editar Entrada</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <form action="{% url 'editar_entrada' evento.id entrada.id %}" method="POST">
-                                                            {% csrf_token %}
-                                                            <div class="modal-body">
-                                                                {{ form.as_p }}
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div> -->
                                             <form action="{% url 'eliminar_entrada' evento.id entrada.id %}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta entrada?');">
                                                 {% csrf_token %}
                                                 <button type="submit" class="btn btn-danger shadow rounded"><i class="fa-solid fa-trash"></i></button>
